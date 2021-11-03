@@ -11,6 +11,10 @@ export default {
     accessTokenExp: '4d',
     refreshTokenExp: '1y',
     verifyEmailExp: '15m',
+    KEY: '12345',
+    CALLBACK_URL: '/v1/auth/google/redirect',
+    CLIENT_ID: '',
+    CLIENT_SECRET: '',
     database: {
         url: process.env.DB_URL || 'mongodb://localhost:27017/tnbc'
     },

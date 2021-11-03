@@ -4,19 +4,12 @@ import UserRepository from '../../repository/user.respository';
 import EmailCodeRepository from '../../repository/emailCode.repository';
 import jwt from 'jsonwebtoken';
 import { systemResponse } from '../../../utils/response';
-import { CompareString, SignJwt } from './encrpty.service';
+import { CompareString, Encrypt, SignJwt } from './encrpty.service';
 
 type user = {
+    username: string;
     email: string;
     password: string;
-};
-
-type reg_details = {
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
 };
 
 @injectable()
@@ -31,14 +24,51 @@ export default class AuthService {
         this.limit = 20;
     }
 
-    public async register(body: reg_details, id: any): Promise<any> {
-        return systemResponse(true, 'Registration successfull', {});
+    public async register(body: user): Promise<any> {
+        const { username, email, password } = body;
+
+        const checkEmail = await this._userRepository.findOne({ email, oauth: false });
+        if (checkEmail) {
+            return systemResponse(false, 'Email already exists', {});
+        }
+
+        const checkUsername = await this._userRepository.findOne({ username });
+        if (checkUsername) {
+            return systemResponse(false, 'Username already exists', {});
+        }
+
+        const _password = await Encrypt(password);
+        const user = { username, email, password: _password };
+
+        const newUser = await this._userRepository.create(user);
+        if (!newUser) {
+            return systemResponse(false, 'Registration error', {});
+        }
+
+        const getUser = await this._userRepository.findOne({ email, oauth: false });
+        const payload: { user: { id: string } } = {
+            user: {
+                id: getUser.id
+            }
+        };
+
+        const accessToken = SignJwt(payload, config.accessTokenSecret, config.accessTokenExp);
+        const refreshToken = SignJwt(payload, config.refreshTokenSecret, config.refreshTokenExp);
+
+        if (!accessToken) {
+            return systemResponse(false, 'Token error', {});
+        }
+        if (!refreshToken) {
+            return systemResponse(false, 'Token error', {});
+        }
+
+        return systemResponse(true, 'Registration successfull', { accessToken, refreshToken });
     }
 
     public async login(body: user): Promise<any> {
         const { email, password } = body;
 
-        const user = await this._userRepository.findOne({ email });
+        const user = await this._userRepository.findOne({ email, oauth: false });
         if (!user) {
             return systemResponse(false, 'Invalid Email or Password', {});
         }
@@ -65,6 +95,28 @@ export default class AuthService {
         }
 
         return systemResponse(true, 'Login Successfull', { accessToken, refreshToken });
+    }
+
+    public async googleAuth(req: any): Promise<any> {
+        const { _id } = req.user;
+
+        const payload: { user: { id: string } } = {
+            user: {
+                id: _id
+            }
+        };
+
+        const accessToken = SignJwt(payload, config.accessTokenSecret, config.accessTokenExp);
+        const refreshToken = SignJwt(payload, config.refreshTokenSecret, config.refreshTokenExp);
+
+        if (!accessToken) {
+            return systemResponse(false, 'Token error', {});
+        }
+        if (!refreshToken) {
+            return systemResponse(false, 'Token error', {});
+        }
+
+        return systemResponse(true, 'Google authentication successfull', { accessToken, refreshToken });
     }
 
     public async refreshToken(body: { refreshToken: string }): Promise<any> {

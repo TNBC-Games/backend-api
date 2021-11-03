@@ -10,7 +10,7 @@ export default class AuthController {
 
     public async register(req: Request, res: Response): Promise<void> {
         const authService = new AuthService();
-        let respo: ISystemR = await authService.register(req.body, res.locals.id);
+        let respo: ISystemR = await authService.register(req.body);
         if (!respo.success) {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
@@ -24,6 +24,20 @@ export default class AuthController {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
         return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
+    public async googleAuth(req: Request, res: Response): Promise<void> {
+        const authService = new AuthService();
+        let respo: ISystemR = await authService.googleAuth(req);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+
+        res.cookie('auth', JSON.stringify(respo.data));
+        res.writeHead(302, {
+            Location: 'http://localhost:3000/login'
+        });
+        return res.end();
     }
 
     public async refreshToken(req: Request, res: Response): Promise<void> {
