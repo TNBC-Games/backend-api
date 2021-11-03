@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "b979f4ca-7045-4a26-8c5f-756878c83f1a",
+		"name": "LibertyAPI",
+		"description": "LibertyAPI Develop Doc",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Get Verification Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\":\"leo@gmail.com\",\"password\":\"1234567\"}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/v1/auth/getCode",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"v1",
+								"auth",
+								"getCode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\":\"leo@gmail.com\"}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/v1/auth/verifyCode/AB1234",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"v1",
+								"auth",
+								"verifyCode",
+								"AB1234"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1ZjZiODJjMmNkMWYwNzk0YzQ5Yjc5In0sImlhdCI6MTYzMzY0NDk5OCwiZXhwIjoxNjMzNjQ1MDA4fQ.avFb6UykqJ9kECHoQ_9-T8os_0oq3iNalfndms5vgsg",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\":\"wazza12\",\"firstName\":\"Leonard\",\"lastName\":\"Ikeh\",\"phone\":\"08094482648\"}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/v1/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"v1",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register user after email verification (token is needed)."
+					},
+					"response": []
+				},
+				{
+					"name": "Login a user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\":\"wazza\",\"password\":\"1234567\"}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resetPassword",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1ZGYxYTU3MTMwMjA0ODNjMDQ1ZDQwIn0sImlhdCI6MTYzMzYyMjAxMSwiZXhwIjoxNjMzNzk0ODExfQ.C9GUA-P-o2Wee4fhfA6ciEiTfweacMPsOiVvntahLaY",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"password\":\"123456789\"}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/v1/auth/resetPassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"v1",
+								"auth",
+								"resetPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgotPassword",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\":\"leo@leo.com\"}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/v1/auth/forgotPassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"v1",
+								"auth",
+								"forgotPassword"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
