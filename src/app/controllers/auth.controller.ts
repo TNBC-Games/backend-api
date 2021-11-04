@@ -40,6 +40,20 @@ export default class AuthController {
         return res.end();
     }
 
+    public async discordAuth(req: Request, res: Response): Promise<void> {
+        const authService = new AuthService();
+        let respo: ISystemR = await authService.discordAuth(req);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+
+        res.cookie('auth', JSON.stringify(respo.data));
+        res.writeHead(302, {
+            Location: 'http://localhost:3000/login'
+        });
+        return res.end();
+    }
+
     public async refreshToken(req: Request, res: Response): Promise<void> {
         const authService = new AuthService();
         let respo: ISystemR = await authService.refreshToken(req.body);
