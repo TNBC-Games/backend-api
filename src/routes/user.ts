@@ -1,7 +1,8 @@
 import express from 'express';
 import controllerWrapper from '../app/adaptors/controller';
-import AuthController from '../app/controllers/auth.controller';
+import UserController from '../app/controllers/user.controller';
 import container from '../helpers/inversify';
+import auth from '../middleware/auth';
 import { jsonSuccess } from '../utils/response';
 
 const router = express.Router();
@@ -11,13 +12,11 @@ const router = express.Router();
  */
 
 // Iterate over all our controllers and register our routes
-// const AuthControllerInstance = container.get<AuthController>(AuthController);
+const UserControllerInstance = container.get<UserController>(UserController);
 
-router.get('/', (req, res)=>{
-  jsonSuccess(res, 200, 'users loaded', {})
-})
+router.get('/', auth, controllerWrapper(UserControllerInstance.getUser));
 
 export default {
-	baseUrl: '/user',
-	router
+    baseUrl: '/user',
+    router
 };

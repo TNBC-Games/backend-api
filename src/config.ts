@@ -1,5 +1,3 @@
-import abi from './contracts/abi.json';
-
 export default {
     port: process.env.PORT || '9090',
     instance: process.env.INSTANCE_ID || '1',
@@ -13,29 +11,13 @@ export default {
     verifyEmailExp: '15m',
     KEY: '12345',
     CALLBACK_URL: '/v1/auth/google/redirect',
-    CLIENT_ID: '',
-    CLIENT_SECRET: '',
+    CLIENT_ID: '397297913799-jjj5mpb062nlqcsvohuae4rnpj3ikik8.apps.googleusercontent.com',
+    CLIENT_SECRET: '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',
     database: {
-        url: process.env.DB_URL || 'mongodb://localhost:27017/tnbc'
+        url: process.env.DB_URL || 'mongodb+srv://leo:leo_0987@tnbc.xymbs.mongodb.net/TNBC?retryWrites=true&w=majority'
     },
     logger: {
         level: process.env.LOG_LEVEL || 'info',
         file: process.env.LOG_FILE || 'logs/error.log'
-    },
-    mail: {
-        key: process.env.MAIL_KEY || '1234',
-        domain: process.env.MAIL_DOMAIN || '',
-        user: process.env.GMAIL_USER || '',
-        password: process.env.GMAIL_PASS || ''
-    },
-    ETH: {
-        token: process.env.ETH_TOKEN || '',
-        abi,
-        gas: 60000,
-        gasPrice: 10
-    },
-    CARD: {
-        url: process.env.CARD_URL || 'https://sandbox.spendjuice.com/',
-        key: process.env.CARD_KEY || ''
     }
 };
