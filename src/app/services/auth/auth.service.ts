@@ -27,7 +27,7 @@ export default class AuthService {
     public async register(body: user): Promise<any> {
         const { username, email, password } = body;
 
-        const checkEmail = await this._userRepository.findOne({ email, oauth: false });
+        const checkEmail = await this._userRepository.findOne({ email: email.toLocaleLowerCase(), oauth: false });
         if (checkEmail) {
             return systemResponse(false, 'Email already exists', {});
         }
@@ -38,7 +38,7 @@ export default class AuthService {
         }
 
         const _password = await Encrypt(password);
-        const user = { username, email, password: _password };
+        const user = { username, email: email.toLocaleLowerCase(), password: _password };
 
         const newUser = await this._userRepository.create(user);
         if (!newUser) {
@@ -68,7 +68,7 @@ export default class AuthService {
     public async login(body: user): Promise<any> {
         const { email, password } = body;
 
-        const user = await this._userRepository.findOne({ email, oauth: false });
+        const user = await this._userRepository.findOne({ email: email.toLocaleLowerCase(), oauth: false });
         if (!user) {
             return systemResponse(false, 'Invalid Email or Password', {});
         }
@@ -98,6 +98,28 @@ export default class AuthService {
     }
 
     public async googleAuth(req: any): Promise<any> {
+        const { _id } = req.user;
+
+        const payload: { user: { id: string } } = {
+            user: {
+                id: _id
+            }
+        };
+
+        const accessToken = SignJwt(payload, config.accessTokenSecret, config.accessTokenExp);
+        const refreshToken = SignJwt(payload, config.refreshTokenSecret, config.refreshTokenExp);
+
+        if (!accessToken) {
+            return systemResponse(false, 'Token error', {});
+        }
+        if (!refreshToken) {
+            return systemResponse(false, 'Token error', {});
+        }
+
+        return systemResponse(true, 'Google authentication successfull', { accessToken, refreshToken });
+    }
+
+    public async discordAuth(req: any): Promise<any> {
         const { _id } = req.user;
 
         const payload: { user: { id: string } } = {
