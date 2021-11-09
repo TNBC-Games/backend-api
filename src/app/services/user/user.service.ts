@@ -13,6 +13,14 @@ export default class UserService {
     }
 
     public async getUser(id: string): Promise<any> {
-        return systemResponse(true, 'Registration successfull', { id });
+        const user = await this._userRepository.findById(id, '-password');
+        if (!user) {
+            return systemResponse(false, 'Invalid User', {});
+        }
+        return systemResponse(true, '', user);
+    }
+
+    public async updateUser(id: string): Promise<any> {
+        return systemResponse(true, '', {});
     }
 }

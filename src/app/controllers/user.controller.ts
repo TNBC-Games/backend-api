@@ -9,8 +9,17 @@ export default class AuthController {
     constructor() {}
 
     public async getUser(req: Request, res: Response): Promise<void> {
-        const authService = new UserService();
-        let respo: ISystemR = await authService.getUser(res.locals.id);
+        const userService = new UserService();
+        let respo: ISystemR = await userService.getUser(res.locals.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
+    public async updateUser(req: Request, res: Response): Promise<void> {
+        const userService = new UserService();
+        let respo: ISystemR = await userService.updateUser(res.locals.id);
         if (!respo.success) {
             return jsonFailed(res, 400, respo.message, {}, {});
         }

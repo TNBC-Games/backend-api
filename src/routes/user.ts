@@ -15,6 +15,7 @@ const router = express.Router();
 const UserControllerInstance = container.get<UserController>(UserController);
 
 router.get('/', auth, controllerWrapper(UserControllerInstance.getUser));
+router.put('/', auth, controllerWrapper(UserControllerInstance.updateUser));
 
 export default {
     baseUrl: '/user',
