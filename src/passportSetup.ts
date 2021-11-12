@@ -26,6 +26,7 @@ passport.use(
                 } else {
                     new User({
                         email: email._json.email,
+                        username: email.name,
                         googleId: email.id,
                         oauth: true
                     })
