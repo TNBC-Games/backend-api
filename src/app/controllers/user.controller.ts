@@ -5,7 +5,7 @@ import UserService from '../services/user/user.service';
 import { ISystemR } from '../../utils/types';
 
 @injectable()
-export default class AuthController {
+export default class UserController {
     constructor() {}
 
     public async getUser(req: Request, res: Response): Promise<void> {

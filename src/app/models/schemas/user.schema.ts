@@ -14,6 +14,26 @@ class UserSchema {
                 password: {
                     type: String
                 },
+                points: {
+                    type: Number,
+                    default: 0
+                },
+                earnings: {
+                    type: Number,
+                    default: 0
+                },
+                gold: {
+                    type: Number,
+                    default: 0
+                },
+                silver: {
+                    type: Number,
+                    default: 0
+                },
+                bronze: {
+                    type: Number,
+                    default: 0
+                },
                 oauth: {
                     type: Boolean,
                     default: false
