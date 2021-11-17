@@ -14,6 +14,9 @@ class UserSchema {
                 password: {
                     type: String
                 },
+                avatar: {
+                    type: String
+                },
                 admin: {
                     type: Boolean,
                     default: false

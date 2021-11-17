@@ -33,7 +33,7 @@ export default abstract class BaseRepository<T extends any> implements IWrite<T>
     }
 
     async find(item: any): Promise<any> {
-        let response = await this._model.find({});
+        let response = await this._model.find(item);
         return response;
     }
 
@@ -47,6 +47,11 @@ export default abstract class BaseRepository<T extends any> implements IWrite<T>
         if (select.trim() !== '') {
             response = await this._model.findOne({ _id: id }).select(select);
         }
+        return response;
+    }
+
+    async findWithOptions(item: any, options: any): Promise<any> {
+        let response = await this._model.find(item, {}, options);
         return response;
     }
 }

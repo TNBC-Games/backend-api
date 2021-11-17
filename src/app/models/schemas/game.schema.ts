@@ -20,6 +20,9 @@ class GameSchema {
                     type: String,
                     requierd: true
                 },
+                image: {
+                    type: String
+                },
                 categories: {
                     type: [categoriesSchema],
                     required: false
