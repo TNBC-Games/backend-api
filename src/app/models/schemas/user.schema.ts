@@ -14,6 +14,10 @@ class UserSchema {
                 password: {
                     type: String
                 },
+                admin: {
+                    type: Boolean,
+                    default: false
+                },
                 points: {
                     type: Number,
                     default: 0
