@@ -68,11 +68,3 @@ export const makeRequest = async (url:string, method:Method, payload:any = {}, h
         statusCode: _res.status
     };
 };
-
-export const cardAPIRequest = async (url:string, method:Method, payload:any = {}, headers:any = {}, meta = {}, reject_unauthorized = true) =>{
-    const mainUrl = `${config.CARD.url}/url`;
-    const mainHeaders = {
-        ...headers
-    };
-    return makeRequest(mainUrl, method, payload, mainHeaders, meta, reject_unauthorized);
-}
