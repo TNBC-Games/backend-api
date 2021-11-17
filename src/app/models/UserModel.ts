@@ -9,10 +9,6 @@ class HeroModel {
    get userName (): string {
        return this._heroModel.username || '' ;
    }
-
-   get name (): string {
-       return this._heroModel.firstName + ' ' + this._heroModel.lastName ;
-   }   
     
 };
 export =  HeroModel;
