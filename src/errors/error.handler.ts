@@ -18,6 +18,7 @@ export default function (app: Application) {
 
   // Request error handler
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
+    console.log('<---Error--->', err);
     if (err instanceof SyntaxError) {
       return jsonFailed(res, 400, 'Bad Request', null, 'Bad Request');
     }
@@ -26,7 +27,7 @@ export default function (app: Application) {
       let jsonObject:any = {};  
       messages.forEach((value:any, key:any) => {jsonObject[key] = value});  
       let msg = jsonObject.body.details.map((er:any)=>{ return {[er.path]: er.message.replace(/["]+/g, '')}});
-      // console.log('json==>', msg);
+      console.log('json==>', msg);
       return jsonFailed(res, 400, 'Bad Request', msg, msg);
     }
     if (err.message) {
@@ -54,7 +55,7 @@ export default function (app: Application) {
     } else if (typeof err === 'string') {
       log.error(`${req.method} ${req.path}: Unhandled request error ${userString}. ${err}`);
     } 
-    console.log(err);
+    console.log('---', err);
     // log.error(`${req.method} ${req.path}: Request error ${userString}. ${err}`);
     return next(err);
   });

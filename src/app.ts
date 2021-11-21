@@ -12,7 +12,7 @@ import initDB from './helpers/database';
 import config from './config';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
-const passportSetup = require('./passportSetup');
+// const passportSetup = require('./passportSetup');
 
 /**
  * This is a bootstrap function
