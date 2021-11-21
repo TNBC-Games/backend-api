@@ -5,7 +5,7 @@
     "license": "MIT",
     "author": "BeardKoda",
     "scripts": {
-        "start": "BUILD_TYPE=js ts-node build/src/app.js",
+        "start": "BUILD_TYPE=js node build/src/app.js",
         "start-m": "ts-node src/app.ts",
         "postinstall": "rm -rf build && tsc -p .",
         "dev": "nodemon -x ts-node src/app.ts",
