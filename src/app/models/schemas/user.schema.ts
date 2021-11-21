@@ -14,6 +14,13 @@ class UserSchema {
                 password: {
                     type: String
                 },
+                avatar: {
+                    type: String
+                },
+                admin: {
+                    type: Boolean,
+                    default: false
+                },
                 points: {
                     type: Number,
                     default: 0

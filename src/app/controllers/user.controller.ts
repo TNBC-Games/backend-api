@@ -19,7 +19,16 @@ export default class UserController {
 
     public async updateUser(req: Request, res: Response): Promise<void> {
         const userService = new UserService();
-        let respo: ISystemR = await userService.updateUser(res.locals.id);
+        let respo: ISystemR = await userService.updateUser(req.body, res.locals.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
+    public async getLeaderBoard(req: Request, res: Response): Promise<void> {
+        const userService = new UserService();
+        let respo: ISystemR = await userService.getLeaderBoard(req.query);
         if (!respo.success) {
             return jsonFailed(res, 400, respo.message, {}, {});
         }

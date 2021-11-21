@@ -4,9 +4,11 @@ interface UserModel extends mongoose.Document {
     email: string;
     username: string;
     password: string;
+    avatar: string;
+    admin: boolean;
     oauth: boolean;
-    googleId: boolean;
-    discordId: boolean;
+    googleId?: boolean;
+    discordId?: boolean;
 }
 
 export = UserModel;

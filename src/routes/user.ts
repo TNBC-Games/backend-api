@@ -1,6 +1,8 @@
+import { celebrate } from 'celebrate';
 import express from 'express';
 import controllerWrapper from '../app/adaptors/controller';
 import UserController from '../app/controllers/user.controller';
+import { updateUserSchema } from '../app/requests/user.requests';
 import container from '../helpers/inversify';
 import auth from '../middleware/auth';
 import { jsonSuccess } from '../utils/response';
@@ -15,7 +17,8 @@ const router = express.Router();
 const UserControllerInstance = container.get<UserController>(UserController);
 
 router.get('/', auth, controllerWrapper(UserControllerInstance.getUser));
-router.put('/', auth, controllerWrapper(UserControllerInstance.updateUser));
+router.put('/', auth, celebrate(updateUserSchema), controllerWrapper(UserControllerInstance.updateUser));
+router.get('/leaderBoard', controllerWrapper(UserControllerInstance.getLeaderBoard));
 
 export default {
     baseUrl: '/user',
