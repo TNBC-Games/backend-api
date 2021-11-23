@@ -18,6 +18,20 @@ export const auth = (req: Request, res: Response, next: NextFunction): any => {
     }
 };
 
+export const superAdmin = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    if (!res.locals.id) {
+        return jsonFailed(res, 400, 'Unauthorized, token needed for authorization', {}, {});
+    }
+    const _userRepository = new UserRepository();
+    const user = await _userRepository.findById(res.locals.id);
+
+    if (user.superAdmin) {
+        next();
+    } else {
+        return jsonFailed(res, 400, 'Route is only accessible to the super admin', {}, {});
+    }
+};
+
 export const admin = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     if (!res.locals.id) {
         return jsonFailed(res, 400, 'Unauthorized, token needed for authorization', {}, {});
@@ -25,9 +39,9 @@ export const admin = async (req: Request, res: Response, next: NextFunction): Pr
     const _userRepository = new UserRepository();
     const user = await _userRepository.findById(res.locals.id);
 
-    if (!user.admin) {
-        return jsonFailed(res, 400, 'Route is only accessible to admins', {}, {});
-    } else {
+    if (user.admin || user.superAdmin) {
         next();
+    } else {
+        return jsonFailed(res, 400, 'Route is only accessible to admins', {}, {});
     }
 };
