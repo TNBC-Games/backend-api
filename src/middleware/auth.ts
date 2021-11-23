@@ -26,7 +26,7 @@ export const admin = async (req: Request, res: Response, next: NextFunction): Pr
     const user = await _userRepository.findById(res.locals.id);
 
     if (!user.admin) {
-        return jsonFailed(res, 400, 'Route only accessible to admins', {}, {});
+        return jsonFailed(res, 400, 'Route is only accessible to admins', {}, {});
     } else {
         next();
     }
