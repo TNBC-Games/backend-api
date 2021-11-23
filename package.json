@@ -5,12 +5,12 @@
     "license": "MIT",
     "author": "BeardKoda",
     "scripts": {
-        "start": "node build/src/app.js",
+        "start": "BUILD_TYPE=js node build/src/app.js",
         "start-m": "ts-node src/app.ts",
         "postinstall": "rm -rf build && tsc -p .",
         "dev": "nodemon -x ts-node src/app.ts",
-        "build": "rm -rf build && tsc -p .",
-        "production": "NODE_ENV=production node ./build/src/app.js",
+        "build": "rm -rf build && tsc -p . --module commonjs",
+        "production": "BUILD_TYPE=js NODE_ENV=production node ./build/src/app.js",
         "test:mocha": "NODE_ENV=test mocha -r ts-node/register test/**/* --timeout 60000",
         "test": "NODE_ENV=test LOG_LEVEL=debug jest --forceExit --silent ./build/test",
         "coverage": "NODE_ENV=test LOG_LEVEL=debug jest --coverage --forceExit ./build/test/api"

@@ -20,7 +20,7 @@ const logger = createLogger({
 });
 
 if (config.env !== 'production') {
-  logger.remove(file);
+  // logger.remove(file);
   logger.add(console);
 }
 
