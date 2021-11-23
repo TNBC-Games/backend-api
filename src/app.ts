@@ -12,7 +12,8 @@ import initDB from './helpers/database';
 import config from './config';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
-// const passportSetup = require('./passportSetup');
+const passportSetup = require('./passportSetup');
+import { createSuperAdmin } from './seeder';
 
 /**
  * This is a bootstrap function
@@ -72,6 +73,9 @@ async function bootstrap() {
 
     app.use(passport.initialize());
     app.use(passport.session());
+
+    //create super admin
+    createSuperAdmin();
 
     /**
      * Host static public directory

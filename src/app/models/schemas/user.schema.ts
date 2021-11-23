@@ -18,8 +18,10 @@ class UserSchema {
                     type: String
                 },
                 admin: {
-                    type: Boolean,
-                    default: false
+                    type: Boolean
+                },
+                superAdmin: {
+                    type: Boolean
                 },
                 points: {
                     type: Number,

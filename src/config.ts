@@ -4,6 +4,8 @@ export default {
     node_version: process.version,
     env: process.env.NODE_ENV || 'development',
     type: process.env.BUILD_TYPE || 'ts',
+    superAdminPassword: process.env.SUPER_ADMIN_PASS || '123456',
+    superAdminEmail: process.env.SUPER_ADMIN_EMAIL || 'leo247@gmail.com',
     accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || 'secret1',
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || 'secret2',
     verifyEmailSecret: process.env.VERIFY_EMAIL_SECRET || 'vfesecret',
