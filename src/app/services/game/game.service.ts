@@ -29,10 +29,6 @@ export default class AuthService {
             return systemResponse(false, 'Invalid User', {});
         }
 
-        if (!user.admin) {
-            return systemResponse(false, 'Route only accessible to admins', {});
-        }
-
         const checkName = await this._gameRepository.findOne({ name: name.toLocaleUpperCase() });
         if (checkName) {
             return systemResponse(false, 'Name already used', {});
@@ -97,10 +93,6 @@ export default class AuthService {
         const user = await this._userRepository.findById(id);
         if (!user) {
             return systemResponse(false, 'Invalid User', {});
-        }
-
-        if (!user.admin) {
-            return systemResponse(false, 'Route only accessible to admins', {});
         }
 
         const game = await this._gameRepository.findOne({ name: _name });

@@ -4,7 +4,7 @@ import controllerWrapper from '../app/adaptors/controller';
 import UserController from '../app/controllers/user.controller';
 import { updateUserSchema } from '../app/requests/user.requests';
 import container from '../helpers/inversify';
-import auth from '../middleware/auth';
+import { auth } from '../middleware/auth';
 import { jsonSuccess } from '../utils/response';
 
 const router = express.Router();

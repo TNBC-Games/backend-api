@@ -2,8 +2,9 @@ import jwt from 'jsonwebtoken';
 import config from '../config';
 import { Request, Response, NextFunction } from 'express';
 import { jsonFailed } from '../utils/response';
+import UserRepository from '../app/repository/user.respository';
 
-export = (req: Request, res: Response, next: NextFunction): any => {
+export const auth = (req: Request, res: Response, next: NextFunction): any => {
     const accessToken: any = req.header('x-auth-token');
     if (!accessToken) {
         return jsonFailed(res, 400, 'Unauthorized, token needed for authorization', {}, {});
@@ -14,5 +15,19 @@ export = (req: Request, res: Response, next: NextFunction): any => {
         next();
     } catch (err: any) {
         return jsonFailed(res, 400, err.message, {}, {});
+    }
+};
+
+export const admin = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    if (!res.locals.id) {
+        return jsonFailed(res, 400, 'Unauthorized, token needed for authorization', {}, {});
+    }
+    const _userRepository = new UserRepository();
+    const user = await _userRepository.findById(res.locals.id);
+
+    if (!user.admin) {
+        return jsonFailed(res, 400, 'Route only accessible to admins', {}, {});
+    } else {
+        next();
     }
 };
