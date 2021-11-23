@@ -28,7 +28,7 @@ export const superAdmin = async (req: Request, res: Response, next: NextFunction
     if (user.superAdmin) {
         next();
     } else {
-        return jsonFailed(res, 400, 'Route is only accessible to the super admin', {}, {});
+        return jsonFailed(res, 400, 'Route is only accessible to the Super Admin', {}, {});
     }
 };
 
