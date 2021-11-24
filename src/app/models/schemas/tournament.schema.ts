@@ -5,6 +5,11 @@ class TournamentSchema {
     static get schema() {
         var schema = new mongoose.Schema(
             {
+                creator: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    required: true,
+                    ref: 'Users'
+                },
                 name: {
                     type: String,
                     required: true
@@ -26,7 +31,17 @@ class TournamentSchema {
                     required: true
                 },
                 info: {
-                    type: String
+                    type: String,
+                    required: true
+                },
+                type: {
+                    type: String,
+                    required: true
+                },
+                game: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    required: true,
+                    ref: 'Games'
                 },
                 rules: {
                     type: String

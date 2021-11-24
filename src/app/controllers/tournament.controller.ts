@@ -7,4 +7,22 @@ import { ISystemR } from '../../utils/types';
 @injectable()
 export default class TournamentController {
     constructor() {}
+
+    public async createTournament(req: Request, res: Response): Promise<void> {
+        const tournamentService = new TournamentService();
+        let respo: ISystemR = await tournamentService.createTournament(req.body, res.locals.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
+    public async getTournaments(req: Request, res: Response): Promise<void> {
+        const tournamentService = new TournamentService();
+        let respo: ISystemR = await tournamentService.getTournaments(req.query);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
 }
