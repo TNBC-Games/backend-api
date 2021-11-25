@@ -48,6 +48,12 @@ class TournamentSchema {
                 },
                 howToApply: {
                     type: String
+                },
+                delete: {
+                    type: Boolean
+                },
+                deleteAt: {
+                    type: Date
                 }
             },
             {

@@ -25,4 +25,49 @@ export default class TournamentController {
         }
         return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
+
+    public async getTournament(req: Request, res: Response): Promise<void> {
+        const tournamentService = new TournamentService();
+        let respo: ISystemR = await tournamentService.getTournament(req.params.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
+    public async getMyTournaments(req: Request, res: Response): Promise<void> {
+        const tournamentService = new TournamentService();
+        let respo: ISystemR = await tournamentService.getMyTournaments(res.locals.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
+    public async enterTournament(req: Request, res: Response): Promise<void> {
+        const tournamentService = new TournamentService();
+        let respo: ISystemR = await tournamentService.enterTournament(req.params.id, res.locals.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
+    public async updateTournament(req: Request, res: Response): Promise<void> {
+        const tournamentService = new TournamentService();
+        let respo: ISystemR = await tournamentService.updateTournament(req.body, req.params.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
+    public async deleteTournament(req: Request, res: Response): Promise<void> {
+        const tournamentService = new TournamentService();
+        let respo: ISystemR = await tournamentService.deleteTournament(res.locals.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
 }

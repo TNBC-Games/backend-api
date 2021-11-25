@@ -14,3 +14,18 @@ export const createTournamentSchema = {
         game: Joi.string().required()
     })
 };
+
+export const updateTournamentSchema = {
+    body: Joi.object({
+        name: Joi.string(),
+        prize: Joi.number(),
+        fee: Joi.number(),
+        limit: Joi.number(),
+        startDate: Joi.string(),
+        info: Joi.string(),
+        type: Joi.string(),
+        rules: Joi.string(),
+        howToApply: Joi.string(),
+        game: Joi.string()
+    })
+};
