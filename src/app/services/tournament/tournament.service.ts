@@ -124,7 +124,7 @@ export default class AuthService {
     public async getMyTournaments(id: string): Promise<any> {
         const user = await this._userRepository.findById(id);
         if (!user) {
-            return systemResponse(false, 'Invalid User', {});
+            return systemResponse(false, 'User Invalid', {});
         }
 
         const myTournaments = await this._myTournamentRepository.find({ user: user.id });
