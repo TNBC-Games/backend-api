@@ -16,7 +16,7 @@ export default {
     GOOGLE_CALLBACK_URL: '/v1/auth/google/redirect',
     GOOGLE_CLIENT_ID: '397297913799-jjj5mpb062nlqcsvohuae4rnpj3ikik8.apps.googleusercontent.com',
     GOOGLE_CLIENT_SECRET: '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',
-    DISCORD_CALLBACK_URL: 'https://tnbc-games-api.herokuapp.com/v1/auth/discord/redirect',
+    DISCORD_CALLBACK_URL: '/v1/auth/discord/redirect',
     DISCORD_CLIENT_ID: '905550154466217984',
     DISCORD_CLIENT_SECRET: 'AJ6gvd3ajcNfAbCGW4QIPcIVzyiwgmY6',
     database: {
