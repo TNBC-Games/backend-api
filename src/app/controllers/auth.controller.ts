@@ -32,10 +32,11 @@ export default class AuthController {
         if (!respo.success) {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
-
-        res.cookie('auth', JSON.stringify(respo.data));
+        let data: any = respo.data;
+        res.cookie('accessToken', JSON.stringify(data.accessToken));
+        res.cookie('refreshToken', JSON.stringify(data.refreshToken));
         res.writeHead(302, {
-            Location: 'http://localhost:3000/login'
+            Location: 'http://localhost:3000/'
         });
         return res.end();
     }
@@ -47,9 +48,11 @@ export default class AuthController {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
 
-        res.cookie('auth', JSON.stringify(respo.data));
+        let data: any = respo.data;
+        res.cookie('accessToken', JSON.stringify(data.accessToken));
+        res.cookie('refreshToken', JSON.stringify(data.refreshToken));
         res.writeHead(302, {
-            Location: 'http://localhost:3000/login'
+            Location: 'http://localhost:3000/'
         });
         return res.end();
     }
