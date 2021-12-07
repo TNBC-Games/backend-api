@@ -13,7 +13,7 @@ export default {
     refreshTokenExp: '1y',
     verifyEmailExp: '15m',
     KEY: '12345',
-    GOOGLE_CALLBACK_URL: '/v1/auth/google/redirect',
+    GOOGLE_CALLBACK_URL: 'http://tnbc-games-api.herokuapp.com/v1/auth/google/redirect',
     GOOGLE_CLIENT_ID: '397297913799-jjj5mpb062nlqcsvohuae4rnpj3ikik8.apps.googleusercontent.com',
     GOOGLE_CLIENT_SECRET: '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',
     DISCORD_CALLBACK_URL: '/v1/auth/discord/redirect',
