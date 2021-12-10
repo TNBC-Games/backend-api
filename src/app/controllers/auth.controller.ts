@@ -33,6 +33,7 @@ export default class AuthController {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
         let data: any = respo.data;
+        res.cookie('check', '123456');
         res.cookie('accessToken', JSON.stringify(data.accessToken));
         res.cookie('refreshToken', JSON.stringify(data.refreshToken));
         res.writeHead(302, {
