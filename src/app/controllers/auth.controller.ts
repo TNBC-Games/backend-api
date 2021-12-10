@@ -26,19 +26,17 @@ export default class AuthController {
         return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
 
+    public async redirectUser(req: Request, res: Response): Promise<void> {
+        return res.redirect(`http://localhost:3000/`);
+    }
+
     public async googleAuth(req: Request, res: Response): Promise<void> {
         const authService = new AuthService();
         let respo: ISystemR = await authService.googleAuth(req);
         if (!respo.success) {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
-        let data: any = respo.data;
-        res.cookie('accessToken', data.accessToken);
-        res.cookie('refreshToken', data.refreshToken);
-        res.writeHead(302, {
-            Location: 'http://localhost:3000/'
-        });
-        return res.end();
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
 
     public async discordAuth(req: Request, res: Response): Promise<void> {
@@ -47,14 +45,7 @@ export default class AuthController {
         if (!respo.success) {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
-
-        let data: any = respo.data;
-        res.cookie('accessToken', data.accessToken);
-        res.cookie('refreshToken', data.refreshToken);
-        res.writeHead(302, {
-            Location: 'http://localhost:3000/'
-        });
-        return res.end();
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
 
     public async refreshToken(req: Request, res: Response): Promise<void> {
