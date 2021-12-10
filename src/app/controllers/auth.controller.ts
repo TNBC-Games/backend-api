@@ -38,7 +38,7 @@ export default class AuthController {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
         const data: any = respo.data;
-        return res.redirect(`http://localhost:3000/?accessToken=${data.accessToken}?refreshToken=${data.refreshToken}`);
+        return res.redirect(`https://tnbc-games.herokuapp.com/?accessToken=${data.accessToken}?refreshToken=${data.refreshToken}`);
     }
 
     public async refreshToken(req: Request, res: Response): Promise<void> {
