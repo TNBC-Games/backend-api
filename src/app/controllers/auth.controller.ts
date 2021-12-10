@@ -37,7 +37,7 @@ export default class AuthController {
         res.cookie('accessToken', data.accessToken);
         res.cookie('refreshToken', data.refreshToken);
         res.writeHead(302, {
-            Location: 'http://localhost:3000/'
+            Location: 'http://localhost:3000/login'
         });
         return res.end();
     }
@@ -53,7 +53,7 @@ export default class AuthController {
         res.cookie('accessToken', data.accessToken);
         res.cookie('refreshToken', data.refreshToken);
         res.writeHead(302, {
-            Location: 'http://localhost:3000/'
+            Location: 'http://localhost:3000/login'
         });
         return res.end();
     }
