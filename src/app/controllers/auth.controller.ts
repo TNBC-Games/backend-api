@@ -34,8 +34,8 @@ export default class AuthController {
         }
         let data: any = respo.data;
         res.cookie('check', '123456');
-        res.cookie('accessToken', JSON.stringify(data.accessToken));
-        res.cookie('refreshToken', JSON.stringify(data.refreshToken));
+        res.cookie('accessToken', data.accessToken);
+        res.cookie('refreshToken', data.refreshToken);
         res.writeHead(302, {
             Location: 'http://localhost:3000/'
         });
@@ -50,8 +50,8 @@ export default class AuthController {
         }
 
         let data: any = respo.data;
-        res.cookie('accessToken', JSON.stringify(data.accessToken));
-        res.cookie('refreshToken', JSON.stringify(data.refreshToken));
+        res.cookie('accessToken', data.accessToken);
+        res.cookie('refreshToken', data.refreshToken);
         res.writeHead(302, {
             Location: 'http://localhost:3000/'
         });
