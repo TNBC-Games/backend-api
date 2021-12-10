@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { jsonFailed, jsonSuccess } from '../../utils/response';
 import AuthService from '../services/auth/auth.service';
 import { ISystemR } from '../../utils/types';
+import { rmSync } from 'fs';
 
 @injectable()
 export default class AuthController {
@@ -26,9 +27,9 @@ export default class AuthController {
         return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
 
-    public async redirectUser(req: Request, res: Response): Promise<void> {
-        return res.redirect(`http://localhost:3000/?oauth=true`);
-    }
+    // public async redirectUser(req: Request, res: Response): Promise<void> {
+    //     return res.redirect(`http://localhost:3000/`);
+    // }
 
     public async Oauth(req: Request, res: Response): Promise<void> {
         const authService = new AuthService();
@@ -36,7 +37,8 @@ export default class AuthController {
         if (!respo.success) {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
-        return jsonSuccess(res, 200, respo.message, respo.data, {});
+        const data: any = respo.data;
+        return res.redirect(`http://localhost:3000/?accessToken=${data.accessToken}?refreshToken=${data.refreshToken}`);
     }
 
     public async refreshToken(req: Request, res: Response): Promise<void> {

@@ -19,10 +19,10 @@ const AuthControllerInstance = container.get<AuthController>(AuthController);
 router.post('/register', celebrate(registrationSchema), controllerWrapper(AuthControllerInstance.register));
 router.post('/login', celebrate(loginSchema), controllerWrapper(AuthControllerInstance.login));
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/google/redirect', passport.authenticate('google'), controllerWrapper(AuthControllerInstance.redirectUser));
+router.get('/google/redirect', passport.authenticate('google'), controllerWrapper(AuthControllerInstance.Oauth));
 router.get('/discord', passport.authenticate('discord'));
-router.get('/discord/redirect', passport.authenticate('discord'), controllerWrapper(AuthControllerInstance.redirectUser));
-router.get('/oauth', controllerWrapper(AuthControllerInstance.Oauth));
+router.get('/discord/redirect', passport.authenticate('discord'), controllerWrapper(AuthControllerInstance.Oauth));
+// router.get('/oauth', controllerWrapper(AuthControllerInstance.Oauth));
 
 export default {
     baseUrl: '/auth',
