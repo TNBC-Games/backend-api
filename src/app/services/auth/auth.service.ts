@@ -98,6 +98,10 @@ export default class AuthService {
     }
 
     public async googleAuth(req: any): Promise<any> {
+        if (!req.user) {
+            return systemResponse(false, 'Unauthenticated', {});
+        }
+
         const { _id } = req.user;
 
         const payload: { user: { id: string } } = {
@@ -120,6 +124,10 @@ export default class AuthService {
     }
 
     public async discordAuth(req: any): Promise<any> {
+        if (!req.user) {
+            return systemResponse(false, 'Unauthenticated', {});
+        }
+
         const { _id } = req.user;
 
         const payload: { user: { id: string } } = {
