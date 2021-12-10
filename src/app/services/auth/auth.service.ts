@@ -97,33 +97,7 @@ export default class AuthService {
         return systemResponse(true, 'Login Successfull', { accessToken, refreshToken });
     }
 
-    public async googleAuth(req: any): Promise<any> {
-        if (!req.user) {
-            return systemResponse(false, 'Unauthenticated', {});
-        }
-
-        const { _id } = req.user;
-
-        const payload: { user: { id: string } } = {
-            user: {
-                id: _id
-            }
-        };
-
-        const accessToken = SignJwt(payload, config.accessTokenSecret, config.accessTokenExp);
-        const refreshToken = SignJwt(payload, config.refreshTokenSecret, config.refreshTokenExp);
-
-        if (!accessToken) {
-            return systemResponse(false, 'Token error', {});
-        }
-        if (!refreshToken) {
-            return systemResponse(false, 'Token error', {});
-        }
-
-        return systemResponse(true, 'Google authentication successfull', { accessToken, refreshToken });
-    }
-
-    public async discordAuth(req: any): Promise<any> {
+    public async Oauth(req: any): Promise<any> {
         if (!req.user) {
             return systemResponse(false, 'Unauthenticated', {});
         }

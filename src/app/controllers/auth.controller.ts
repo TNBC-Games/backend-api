@@ -27,21 +27,12 @@ export default class AuthController {
     }
 
     public async redirectUser(req: Request, res: Response): Promise<void> {
-        return res.redirect(`http://localhost:3000/`);
+        return res.redirect(`http://localhost:3000/?oauth=true`);
     }
 
-    public async googleAuth(req: Request, res: Response): Promise<void> {
+    public async Oauth(req: Request, res: Response): Promise<void> {
         const authService = new AuthService();
-        let respo: ISystemR = await authService.googleAuth(req);
-        if (!respo.success) {
-            return jsonFailed(res, 400, respo.message, {}, {});
-        }
-        return jsonSuccess(res, 200, respo.message, respo.data, {});
-    }
-
-    public async discordAuth(req: Request, res: Response): Promise<void> {
-        const authService = new AuthService();
-        let respo: ISystemR = await authService.discordAuth(req);
+        let respo: ISystemR = await authService.Oauth(req);
         if (!respo.success) {
             return jsonFailed(res, 400, respo.message, {}, {});
         }
