@@ -27,6 +27,7 @@ passport.use(
                     new User({
                         email: email._json.email,
                         username: email._json.name,
+                        avatar: email._json.picture,
                         googleId: email.id,
                         oauth: true
                     })
@@ -57,6 +58,7 @@ passport.use(
                         email: profile.email,
                         discordId: profile.id,
                         username: profile.username,
+                        avatar: profile.avatar,
                         oauth: true
                     })
                         .save()
