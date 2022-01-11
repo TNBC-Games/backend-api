@@ -19,6 +19,10 @@ export default {
     DISCORD_CALLBACK_URL: '/v1/auth/discord/redirect',
     DISCORD_CLIENT_ID: '905550154466217984',
     DISCORD_CLIENT_SECRET: 'AJ6gvd3ajcNfAbCGW4QIPcIVzyiwgmY6',
+    baseUrl: process.env.BASE_URL || 'http://localhost:9090/v1',
+    cloudinary_cloud_name: process.env.CLOUD_NAME || 'tnbcgames-com',
+    cloudinary_api_key: process.env.CLOUDINARY_API_KEY || '437354955832423',
+    cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET || '0pqY8LkIZ6DXTeX8US3lKBmXKCw',
     database: {
         url: process.env.DB_URL || 'mongodb+srv://leo:leo_0987@tnbc.xymbs.mongodb.net/TNBC?retryWrites=true&w=majority'
     },

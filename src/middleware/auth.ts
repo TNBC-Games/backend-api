@@ -3,6 +3,7 @@ import config from '../config';
 import { Request, Response, NextFunction } from 'express';
 import { jsonFailed } from '../utils/response';
 import UserRepository from '../app/repository/user.respository';
+import { imageIsValid } from '../utils/helperFunctions';
 
 export const auth = (req: Request, res: Response, next: NextFunction): any => {
     const accessToken: any = req.header('x-auth-token');
@@ -44,4 +45,27 @@ export const admin = async (req: Request, res: Response, next: NextFunction): Pr
     } else {
         return jsonFailed(res, 400, 'Route is only accessible to admins', {}, {});
     }
+};
+
+export const checkAvatar = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    const files: any = req.files;
+    if (!files) {
+        return jsonFailed(res, 400, 'Image (Avatar) missing', {}, {});
+    }
+
+    if (!files.avatar) {
+        return jsonFailed(res, 400, 'Image (Avatar) missing', {}, {});
+    }
+
+    if (Array.isArray(files.avatar)) {
+        if (!imageIsValid(files.avatar[0].mimetype)) {
+            return jsonFailed(res, 400, `Invalid image type`, {}, {});
+        }
+    } else {
+        if (!imageIsValid(files.avatar.mimetype)) {
+            return jsonFailed(res, 400, `Invalid image type`, {}, {});
+        }
+    }
+
+    next();
 };

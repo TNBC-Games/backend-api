@@ -2,6 +2,9 @@ import { injectable, inject } from 'inversify';
 import UserRepository from '../../repository/user.respository';
 import { systemResponse } from '../../../utils/response';
 import { Encrypt } from '../auth/encrpty.service';
+import { cloudinary } from '../../../cloudinary';
+import crypto from 'crypto';
+import path from 'path';
 
 type user = {
     email: string;
@@ -101,5 +104,23 @@ export default class UserService {
             leaderBoard
         };
         return systemResponse(true, 'Get LeaderBoard', results);
+    }
+
+    public async uploadAvatar(files: any, id: string): Promise<any> {
+        let avatar: any;
+
+        if (Array.isArray(files.avatar)) avatar = files.avatar[0];
+        if (!Array.isArray(files.avatar)) avatar = files.avatar;
+
+        // const upload = await cloudinary.uploader.upload(avatar);
+
+        crypto.randomBytes(16, (err, buf) => {
+            if (err) {
+            }
+            const filename = buf.toString('hex') + path.extname(avatar.name);
+            console.log(filename);
+        });
+
+        return systemResponse(true, 'Success', avatar);
     }
 }

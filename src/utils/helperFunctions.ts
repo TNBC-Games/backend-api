@@ -1,4 +1,4 @@
-function generateCode(): string {
+export function generateCode(): string {
     const letters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers: number = Math.floor(1000 + Math.random() * 9000);
 
@@ -7,4 +7,7 @@ function generateCode(): string {
     return id;
 }
 
-export { generateCode };
+export function imageIsValid(type: string) {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    return validTypes.some((val) => val === type);
+}

@@ -13,6 +13,7 @@ import config from './config';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
 const passportSetup = require('./passportSetup');
+import fileUpload from 'express-fileupload';
 import { createSuperAdmin } from './seeder';
 
 /**
@@ -60,6 +61,11 @@ async function bootstrap() {
      */
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+
+    /**
+     * Configure file upload middleware
+     */
+    app.use(fileUpload());
 
     /**
      * Configure cookie session
