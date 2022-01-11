@@ -20,6 +20,7 @@ router.get('/', auth, controllerWrapper(UserControllerInstance.getUser));
 router.put('/', auth, celebrate(updateUserSchema), controllerWrapper(UserControllerInstance.updateUser));
 router.get('/leaderBoard', controllerWrapper(UserControllerInstance.getLeaderBoard));
 router.post('/avatar', auth, checkAvatar, controllerWrapper(UserControllerInstance.uploadAvatar));
+router.delete('/avatar', auth, controllerWrapper(UserControllerInstance.removeAvatar));
 
 export default {
     baseUrl: '/user',

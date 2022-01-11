@@ -65,7 +65,7 @@ async function bootstrap() {
     /**
      * Configure file upload middleware
      */
-    app.use(fileUpload());
+    app.use(fileUpload({ useTempFiles: true }));
 
     /**
      * Configure cookie session

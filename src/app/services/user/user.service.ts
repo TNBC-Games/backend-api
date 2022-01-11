@@ -3,8 +3,7 @@ import UserRepository from '../../repository/user.respository';
 import { systemResponse } from '../../../utils/response';
 import { Encrypt } from '../auth/encrpty.service';
 import { cloudinary } from '../../../cloudinary';
-import crypto from 'crypto';
-import path from 'path';
+import fs from 'fs';
 
 type user = {
     email: string;
@@ -109,18 +108,70 @@ export default class UserService {
     public async uploadAvatar(files: any, id: string): Promise<any> {
         let avatar: any;
 
+        const user = await this._userRepository.findById(id);
+        if (!user) {
+            return systemResponse(false, 'Invalid user', {});
+        }
+
         if (Array.isArray(files.avatar)) avatar = files.avatar[0];
         if (!Array.isArray(files.avatar)) avatar = files.avatar;
 
-        // const upload = await cloudinary.uploader.upload(avatar);
+        if (user.cloudinaryId) {
+            await cloudinary.uploader.destroy(user.cloudinaryId);
+        }
 
-        crypto.randomBytes(16, (err, buf) => {
-            if (err) {
-            }
-            const filename = buf.toString('hex') + path.extname(avatar.name);
-            console.log(filename);
+        const upload = await cloudinary.uploader.upload(avatar.tempFilePath);
+
+        if (!upload) {
+            //delete temp image
+            fs.unlink(avatar.tempFilePath, async (err) => {
+                if (err) throw err;
+            });
+            return systemResponse(false, 'Something went wrong while uploading avatar', {});
+        }
+
+        //delete temp image
+        fs.unlink(avatar.tempFilePath, async (err) => {
+            if (err) throw err;
         });
 
-        return systemResponse(true, 'Success', avatar);
+        const update = {
+            avatar: upload.url,
+            cloudinaryId: upload.public_id
+        };
+        const updateImage = await this._userRepository.updateById(user.id, update);
+
+        if (!updateImage) {
+            return systemResponse(false, 'Something went wrong while uploading avatar', {});
+        }
+
+        const getUser = await this._userRepository.findById(id);
+
+        return systemResponse(true, 'Success', getUser);
+    }
+
+    public async removeAvatar(id: string): Promise<any> {
+        const user = await this._userRepository.findById(id);
+        if (!user) {
+            return systemResponse(false, 'Invalid user', {});
+        }
+
+        if (user.cloudinaryId) {
+            await cloudinary.uploader.destroy(user.cloudinaryId);
+        }
+
+        const update = {
+            avatar: null,
+            cloudinaryId: null
+        };
+        const updateImage = await this._userRepository.updateById(user.id, update);
+
+        if (!updateImage) {
+            return systemResponse(false, 'Something went wrong while deleting avatar', {});
+        }
+
+        const getUser = await this._userRepository.findById(id);
+
+        return systemResponse(true, 'Avatar deleted successfully', getUser);
     }
 }

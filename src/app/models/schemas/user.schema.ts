@@ -15,7 +15,8 @@ class UserSchema {
                     type: String
                 },
                 avatar: {
-                    type: String
+                    type: String,
+                    default: null
                 },
                 admin: {
                     type: Boolean
@@ -51,6 +52,9 @@ class UserSchema {
                     type: String
                 },
                 discordId: {
+                    type: String
+                },
+                cloudinaryId: {
                     type: String
                 }
             },

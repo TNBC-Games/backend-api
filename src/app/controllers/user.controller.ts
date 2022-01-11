@@ -35,6 +35,15 @@ export default class UserController {
         return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
 
+    public async removeAvatar(req: Request, res: Response): Promise<void> {
+        const userService = new UserService();
+        let respo: ISystemR = await userService.removeAvatar(res.locals.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
     public async getLeaderBoard(req: Request, res: Response): Promise<void> {
         const userService = new UserService();
         let respo: ISystemR = await userService.getLeaderBoard(req.query);

@@ -9,6 +9,7 @@ interface UserModel extends mongoose.Document {
     oauth: boolean;
     googleId?: boolean;
     discordId?: boolean;
+    cloudinaryId?: string;
 }
 
 export = UserModel;
