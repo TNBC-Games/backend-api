@@ -45,7 +45,7 @@ export default class AuthService {
             return systemResponse(false, 'Registration error', {});
         }
 
-        const getUser = await this._userRepository.findOne({ email, oauth: false });
+        const getUser = await this._userRepository.findOne({ email: email.toLocaleLowerCase(), oauth: false }, '-password');
         const payload: { user: { id: string } } = {
             user: {
                 id: getUser.id
@@ -62,7 +62,7 @@ export default class AuthService {
             return systemResponse(false, 'Token error', {});
         }
 
-        return systemResponse(true, 'Registration successfull', { accessToken, refreshToken });
+        return systemResponse(true, 'Registration successfull', { accessToken, refreshToken, user: getUser });
     }
 
     public async login(body: user): Promise<any> {
@@ -87,14 +87,16 @@ export default class AuthService {
         const accessToken = SignJwt(payload, config.accessTokenSecret, config.accessTokenExp);
         const refreshToken = SignJwt(payload, config.refreshTokenSecret, config.refreshTokenExp);
 
+        const getUser = await this._userRepository.findOne({ email: email.toLocaleLowerCase(), oauth: false }, '-password');
+
         if (!accessToken) {
-            return systemResponse(false, 'Token error', {});
+            return systemResponse(false, 'Token error', { accessToken, refreshToken, getUser });
         }
         if (!refreshToken) {
             return systemResponse(false, 'Token error', {});
         }
 
-        return systemResponse(true, 'Login Successfull', { accessToken, refreshToken });
+        return systemResponse(true, 'Login Successfull', { accessToken, refreshToken, user });
     }
 
     public async Oauth(req: any): Promise<any> {
@@ -120,7 +122,7 @@ export default class AuthService {
             return systemResponse(false, 'Token error', {});
         }
 
-        return systemResponse(true, 'Google authentication successfull', { accessToken, refreshToken });
+        return systemResponse(true, 'Google authentication successfull', { accessToken, refreshToken, user: req.user });
     }
 
     public async refreshToken(body: { refreshToken: string }): Promise<any> {

@@ -40,8 +40,11 @@ export default abstract class BaseRepository<T extends any> implements IWrite<T>
         return response;
     }
 
-    async findOne(filter: object): Promise<any> {
+    async findOne(filter: object, select: string = ''): Promise<any> {
         let response = await this._model.findOne(filter);
+        if (select.trim() !== '') {
+            response = await this._model.findOne(filter).select(select);
+        }
         return response;
     }
 
