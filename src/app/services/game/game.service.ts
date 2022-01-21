@@ -2,6 +2,9 @@ import { injectable, inject } from 'inversify';
 import GameRepository from '../../repository/game.repository';
 import UserRepository from '../../repository/user.respository';
 import { systemResponse } from '../../../utils/response';
+import mongoose from 'mongoose';
+import { cloudinary } from '../../../cloudinary';
+import fs from 'fs';
 
 type game = {
     name: string;
@@ -115,5 +118,51 @@ export default class AuthService {
         }
 
         return systemResponse(true, 'Game updated', {});
+    }
+
+    public async uploadGameImage(files: any, name: string): Promise<any> {
+        let image: any;
+        let _name = name.toLocaleUpperCase();
+
+        const game = await this._gameRepository.findOne({ name: _name });
+        if (!game) {
+            return systemResponse(false, 'Invalid game', {});
+        }
+
+        if (Array.isArray(files.image)) image = files.image[0];
+        if (!Array.isArray(files.image)) image = files.image;
+
+        if (game.cloudinaryId) {
+            await cloudinary.uploader.destroy(game.cloudinaryId);
+        }
+
+        const upload = await cloudinary.uploader.upload(image.tempFilePath);
+
+        if (!upload) {
+            //delete temp image
+            fs.unlink(image.tempFilePath, async (err) => {
+                if (err) throw err;
+            });
+            return systemResponse(false, 'Something went wrong while uploading image', {});
+        }
+
+        //delete temp image
+        fs.unlink(image.tempFilePath, async (err) => {
+            if (err) throw err;
+        });
+
+        const update = {
+            image: upload.url,
+            cloudinaryId: upload.public_id
+        };
+        const updateImage = await this._gameRepository.updateById(game.id, update);
+
+        if (!updateImage) {
+            return systemResponse(false, 'Something went wrong while uploading image', {});
+        }
+
+        const getGame = await this._gameRepository.findOne({ name: _name });
+
+        return systemResponse(true, 'Game', getGame);
     }
 }

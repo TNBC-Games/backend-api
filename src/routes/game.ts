@@ -4,7 +4,7 @@ import controllerWrapper from '../app/adaptors/controller';
 import GameController from '../app/controllers/game.controller';
 import { addGameSchema } from '../app/requests/game.request';
 import container from '../helpers/inversify';
-import { auth, admin } from '../middleware/auth';
+import { auth, admin, checkImage } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -16,6 +16,7 @@ const router = express.Router();
 const GameControllerInstance = container.get<GameController>(GameController);
 
 router.post('/', auth, admin, celebrate(addGameSchema), controllerWrapper(GameControllerInstance.addGame));
+router.post('/uploadImage/:name', auth, admin, checkImage, controllerWrapper(GameControllerInstance.uploadGameImage));
 router.get('/', GameControllerInstance.getGames);
 router.get('/:name', GameControllerInstance.getGame);
 router.get('/search/:name', GameControllerInstance.searchGames);

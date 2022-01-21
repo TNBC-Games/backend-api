@@ -52,4 +52,13 @@ export default class GameController {
         }
         return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
+
+    public async uploadGameImage(req: Request, res: Response): Promise<void> {
+        const gameService = new GameService();
+        let respo: ISystemR = await gameService.uploadGameImage(req.files, req.params.name);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
 }
