@@ -52,4 +52,13 @@ export default class UserController {
         }
         return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
+
+    public async getUserProfile(req: Request, res: Response): Promise<void> {
+        const userService = new UserService();
+        let respo: ISystemR = await userService.getUserProfile(req.params.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
 }

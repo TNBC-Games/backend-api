@@ -4,6 +4,7 @@ import { systemResponse } from '../../../utils/response';
 import { Encrypt } from '../auth/encrpty.service';
 import { cloudinary } from '../../../cloudinary';
 import fs from 'fs';
+import mongoose from 'mongoose';
 
 type user = {
     email: string;
@@ -173,5 +174,18 @@ export default class UserService {
         const getUser = await this._userRepository.findById(id);
 
         return systemResponse(true, 'Avatar deleted successfully', getUser);
+    }
+
+    public async getUserProfile(id: string): Promise<any> {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return systemResponse(false, 'Invalid user', {});
+        }
+
+        const user = await this._userRepository.findById(id, '-password -cloudinaryId');
+        if (!user) {
+            return systemResponse(false, 'Invalid user', {});
+        }
+
+        return systemResponse(true, '', user);
     }
 }

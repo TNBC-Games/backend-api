@@ -8,20 +8,20 @@ import { imageIsValid } from '../utils/helperFunctions';
 export const auth = (req: Request, res: Response, next: NextFunction): any => {
     const accessToken: any = req.header('x-auth-token');
     if (!accessToken) {
-        return jsonFailed(res, 400, 'Unauthorized, token needed for authorization', {}, {});
+        return jsonFailed(res, 403, 'Unauthorized, token needed for authorization', {}, {});
     }
     try {
         const decode: any = jwt.verify(accessToken, config.accessTokenSecret);
         res.locals.id = decode.user.id;
         next();
     } catch (err: any) {
-        return jsonFailed(res, 400, err.message, {}, {});
+        return jsonFailed(res, 403, err.message, {}, {});
     }
 };
 
 export const superAdmin = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     if (!res.locals.id) {
-        return jsonFailed(res, 400, 'Unauthorized, token needed for authorization', {}, {});
+        return jsonFailed(res, 403, 'Unauthorized, token needed for authorization', {}, {});
     }
     const _userRepository = new UserRepository();
     const user = await _userRepository.findById(res.locals.id);
@@ -29,13 +29,13 @@ export const superAdmin = async (req: Request, res: Response, next: NextFunction
     if (user.superAdmin) {
         next();
     } else {
-        return jsonFailed(res, 400, 'Route is only accessible to the Super Admin', {}, {});
+        return jsonFailed(res, 403, 'Route is only accessible to the Super Admin', {}, {});
     }
 };
 
 export const admin = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     if (!res.locals.id) {
-        return jsonFailed(res, 400, 'Unauthorized, token needed for authorization', {}, {});
+        return jsonFailed(res, 403, 'Unauthorized, token needed for authorization', {}, {});
     }
     const _userRepository = new UserRepository();
     const user = await _userRepository.findById(res.locals.id);
@@ -43,7 +43,7 @@ export const admin = async (req: Request, res: Response, next: NextFunction): Pr
     if (user.admin || user.superAdmin) {
         next();
     } else {
-        return jsonFailed(res, 400, 'Route is only accessible to admins', {}, {});
+        return jsonFailed(res, 403, 'Route is only accessible to admins', {}, {});
     }
 };
 

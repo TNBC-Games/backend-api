@@ -87,7 +87,7 @@ export default class AuthService {
         const accessToken = SignJwt(payload, config.accessTokenSecret, config.accessTokenExp);
         const refreshToken = SignJwt(payload, config.refreshTokenSecret, config.refreshTokenExp);
 
-        const getUser = await this._userRepository.findOne({ email: email.toLocaleLowerCase(), oauth: false }, '-password');
+        const getUser = await this._userRepository.findOne({ email: email.toLocaleLowerCase(), oauth: false }, '-password -cloudinaryId');
 
         if (!accessToken) {
             return systemResponse(false, 'Token error', { accessToken, refreshToken, getUser });
@@ -96,7 +96,7 @@ export default class AuthService {
             return systemResponse(false, 'Token error', {});
         }
 
-        return systemResponse(true, 'Login Successfull', { accessToken, refreshToken, user });
+        return systemResponse(true, 'Login Successfull', { accessToken, refreshToken, user: getUser });
     }
 
     public async Oauth(req: any): Promise<any> {
