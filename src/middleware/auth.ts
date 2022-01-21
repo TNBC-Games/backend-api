@@ -47,22 +47,22 @@ export const admin = async (req: Request, res: Response, next: NextFunction): Pr
     }
 };
 
-export const checkAvatar = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+export const checkImage = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const files: any = req.files;
     if (!files) {
-        return jsonFailed(res, 400, 'Image (Avatar) missing', {}, {});
+        return jsonFailed(res, 400, 'Image missing', {}, {});
     }
 
-    if (!files.avatar) {
-        return jsonFailed(res, 400, 'Image (Avatar) missing', {}, {});
+    if (!files.image) {
+        return jsonFailed(res, 400, 'Image missing', {}, {});
     }
 
-    if (Array.isArray(files.avatar)) {
-        if (!imageIsValid(files.avatar[0].mimetype)) {
+    if (Array.isArray(files.image)) {
+        if (!imageIsValid(files.image[0].mimetype)) {
             return jsonFailed(res, 400, `Invalid image type`, {}, {});
         }
     } else {
-        if (!imageIsValid(files.avatar.mimetype)) {
+        if (!imageIsValid(files.image.mimetype)) {
             return jsonFailed(res, 400, `Invalid image type`, {}, {});
         }
     }

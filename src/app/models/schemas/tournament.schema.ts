@@ -49,6 +49,12 @@ class TournamentSchema {
                 howToApply: {
                     type: String
                 },
+                image: {
+                    type: String
+                },
+                cloudinaryId: {
+                    type: String
+                },
                 delete: {
                     type: Boolean
                 },

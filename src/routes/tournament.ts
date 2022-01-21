@@ -4,7 +4,7 @@ import controllerWrapper from '../app/adaptors/controller';
 import TournamentController from '../app/controllers/tournament.controller';
 import { createTournamentSchema, updateTournamentSchema } from '../app/requests/tournament.request';
 import container from '../helpers/inversify';
-import { admin, auth } from '../middleware/auth';
+import { admin, auth, checkImage } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -22,6 +22,7 @@ router.get('/myTournaments', auth, controllerWrapper(TournamentControllerInstanc
 router.get('/:id', controllerWrapper(TournamentControllerInstance.getTournament));
 router.put('/:id', auth, admin, celebrate(updateTournamentSchema), controllerWrapper(TournamentControllerInstance.updateTournament));
 router.delete('/', auth, admin, controllerWrapper(TournamentControllerInstance.deleteTournament));
+router.post('/uploadImage/:id', auth, admin, checkImage, controllerWrapper(TournamentControllerInstance.uploadTournamentImage));
 
 export default {
     baseUrl: '/tournament',

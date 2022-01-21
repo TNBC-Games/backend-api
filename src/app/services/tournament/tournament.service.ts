@@ -5,6 +5,8 @@ import UserRepository from '../../repository/user.respository';
 import MyTournamentRepository from '../../repository/myTournaments.repository';
 import { systemResponse } from '../../../utils/response';
 import mongoose from 'mongoose';
+import { cloudinary } from '../../../cloudinary';
+import fs from 'fs';
 
 type details = {
     name: string;
@@ -181,5 +183,54 @@ export default class AuthService {
         }
 
         return systemResponse(true, 'Tournament Deleted', {});
+    }
+
+    public async uploadTournamentImage(files: any, id: string): Promise<any> {
+        let image: any;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return systemResponse(false, 'Invalid tournament id', {});
+        }
+
+        const tournament = await this._tournamentRepository.findById(id);
+        if (!tournament) {
+            return systemResponse(false, 'Invalid tournament', {});
+        }
+
+        if (Array.isArray(files.image)) image = files.image[0];
+        if (!Array.isArray(files.image)) image = files.image;
+
+        if (tournament.cloudinaryId) {
+            await cloudinary.uploader.destroy(tournament.cloudinaryId);
+        }
+
+        const upload = await cloudinary.uploader.upload(image.tempFilePath);
+
+        if (!upload) {
+            //delete temp image
+            fs.unlink(image.tempFilePath, async (err) => {
+                if (err) throw err;
+            });
+            return systemResponse(false, 'Something went wrong while uploading avatar', {});
+        }
+
+        //delete temp image
+        fs.unlink(image.tempFilePath, async (err) => {
+            if (err) throw err;
+        });
+
+        const update = {
+            image: upload.url,
+            cloudinaryId: upload.public_id
+        };
+        const updateImage = await this._tournamentRepository.updateById(tournament.id, update);
+
+        if (!updateImage) {
+            return systemResponse(false, 'Something went wrong while uploading image', {});
+        }
+
+        const getTournament = await this._tournamentRepository.findById(id);
+
+        return systemResponse(true, 'Image uploaded', getTournament);
     }
 }

@@ -70,4 +70,13 @@ export default class TournamentController {
         }
         return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
+
+    public async uploadTournamentImage(req: Request, res: Response): Promise<void> {
+        const tournamentService = new TournamentService();
+        let respo: ISystemR = await tournamentService.uploadTournamentImage(req.files, req.params.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
 }

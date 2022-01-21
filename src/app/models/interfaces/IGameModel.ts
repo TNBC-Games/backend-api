@@ -4,6 +4,7 @@ interface GameModel extends mongoose.Document {
     name: string;
     mainCategory: string;
     avatar?: string;
+    cloudinaryId?: string;
     categories?: { category: string }[];
 }
 

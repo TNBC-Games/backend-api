@@ -23,6 +23,9 @@ class GameSchema {
                 image: {
                     type: String
                 },
+                cloudinaryId: {
+                    type: String
+                },
                 categories: {
                     type: [categoriesSchema],
                     required: false

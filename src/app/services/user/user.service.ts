@@ -114,8 +114,8 @@ export default class UserService {
             return systemResponse(false, 'Invalid user', {});
         }
 
-        if (Array.isArray(files.avatar)) avatar = files.avatar[0];
-        if (!Array.isArray(files.avatar)) avatar = files.avatar;
+        if (Array.isArray(files.image)) avatar = files.image[0];
+        if (!Array.isArray(files.image)) avatar = files.image;
 
         if (user.cloudinaryId) {
             await cloudinary.uploader.destroy(user.cloudinaryId);
@@ -140,9 +140,9 @@ export default class UserService {
             avatar: upload.url,
             cloudinaryId: upload.public_id
         };
-        const updateImage = await this._userRepository.updateById(user.id, update);
+        const updateAvatar = await this._userRepository.updateById(user.id, update);
 
-        if (!updateImage) {
+        if (!updateAvatar) {
             return systemResponse(false, 'Something went wrong while uploading avatar', {});
         }
 

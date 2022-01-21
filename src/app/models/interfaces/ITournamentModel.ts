@@ -12,6 +12,8 @@ interface TournametModel extends mongoose.Document {
     game: string;
     rules?: string;
     howToApply?: string;
+    image?: string;
+    cloudinaryId?: string;
 }
 
 export = TournametModel;

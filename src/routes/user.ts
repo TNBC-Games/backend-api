@@ -4,7 +4,7 @@ import controllerWrapper from '../app/adaptors/controller';
 import UserController from '../app/controllers/user.controller';
 import { updateUserSchema } from '../app/requests/user.requests';
 import container from '../helpers/inversify';
-import { auth, checkAvatar } from '../middleware/auth';
+import { auth, checkImage } from '../middleware/auth';
 import { jsonSuccess } from '../utils/response';
 
 const router = express.Router();
@@ -19,7 +19,7 @@ const UserControllerInstance = container.get<UserController>(UserController);
 router.get('/', auth, controllerWrapper(UserControllerInstance.getUser));
 router.put('/', auth, celebrate(updateUserSchema), controllerWrapper(UserControllerInstance.updateUser));
 router.get('/leaderBoard', controllerWrapper(UserControllerInstance.getLeaderBoard));
-router.post('/avatar', auth, checkAvatar, controllerWrapper(UserControllerInstance.uploadAvatar));
+router.post('/avatar', auth, checkImage, controllerWrapper(UserControllerInstance.uploadAvatar));
 router.delete('/avatar', auth, controllerWrapper(UserControllerInstance.removeAvatar));
 router.get('/profile/:id', controllerWrapper(UserControllerInstance.getUserProfile));
 
