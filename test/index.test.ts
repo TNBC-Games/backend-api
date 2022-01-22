@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'test') {
 beforeEach(async () => {
   try {
     // await clearDatabase();
-  } catch (error) {
+  } catch (error:any) {
     log.info(error.message);
   }
 });
@@ -29,7 +29,7 @@ beforeAll(async () => {
       // userRepository = new Repository<UserDocument>('users');
   
       // await clearDatabaseIndices();
-    } catch (error) {
+    } catch (error:any) {
       log.info(error.message);
     }
 });
