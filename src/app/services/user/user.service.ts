@@ -1,5 +1,6 @@
 import { injectable, inject } from 'inversify';
 import UserRepository from '../../repository/user.respository';
+import UserRecordRepository from '../../repository/userRecord.repository';
 import { systemResponse } from '../../../utils/response';
 import { Encrypt } from '../auth/encrpty.service';
 import { cloudinary } from '../../../cloudinary';
@@ -15,10 +16,12 @@ type user = {
 @injectable()
 export default class UserService {
     private _userRepository: UserRepository;
+    private _userRecordRepository: UserRecordRepository;
     private limit: number;
 
     constructor() {
         this._userRepository = new UserRepository();
+        this._userRecordRepository = new UserRecordRepository();
         this.limit = 20;
     }
 
@@ -27,7 +30,14 @@ export default class UserService {
         if (!user) {
             return systemResponse(false, 'Invalid User', {});
         }
-        return systemResponse(true, '', user);
+
+        const getRecords = await this._userRecordRepository.aggregate([
+            { $group: { _id: '$user', points: { $sum: '$points' }, earnings: { $sum: '$earnings' }, gold: { $sum: '$gold' }, silver: { $sum: '$silver' }, bronze: { $sum: '$bronze' } } }
+        ]);
+
+        const userEarnings = getRecords.find((record: any) => record._id.toString() === user.id.toString());
+
+        return systemResponse(true, '', { user: { ...user._doc, userEarnings } });
     }
 
     public async updateUser(body: user, id: string): Promise<any> {
@@ -74,7 +84,8 @@ export default class UserService {
     }
 
     public async getLeaderBoard(query: any): Promise<any> {
-        let { sortBy, page, limit } = query;
+        let { sortBy, page, limit, game } = query;
+        game = game ? game.toLocaleUpperCase() : '';
 
         const filters: string[] = ['earnings', 'points', 'gold', 'silver', 'bronze'];
         if (filters.some((filter) => sortBy !== filter)) sortBy === 'earnings';
@@ -86,24 +97,34 @@ export default class UserService {
         if (sortBy === 'silver') sort.silver = -1;
         if (sortBy === 'bronze') sort.bronze = -1;
 
-        if (!page) page = 1;
-        if (!limit) limit = 2;
+        const records = await this._userRecordRepository.aggregate([
+            {
+                $match: { $and: [{ createdAt: { $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000) } }, { game: { $eq: game } }] }
+            },
+            { $group: { _id: '$user', points: { $sum: '$points' }, earnings: { $sum: '$earnings' }, gold: { $sum: '$gold' }, silver: { $sum: '$silver' }, bronze: { $sum: '$bronze' } } },
+            {
+                $sort: sort
+            }
+        ]);
 
-        page = parseInt(page);
-        limit = parseInt(limit);
-        const skip = (page - 1) * limit;
+        // if (!page) page = 1;
+        // if (!limit) limit = 2;
 
-        const leaderBoard = await this._userRepository.findWithOptions({}, { limit, skip, sort });
-        const nextPage = await this._userRepository.findWithOptions({}, { limit, skip: skip + limit, sort });
+        // page = parseInt(page);
+        // limit = parseInt(limit);
+        // const skip = (page - 1) * limit;
 
-        const results = {
-            nextPage: nextPage.length !== 0 ? true : false,
-            page,
-            limit,
-            sortBy,
-            leaderBoard
-        };
-        return systemResponse(true, 'Get LeaderBoard', results);
+        // const leaderBoard = await this._userRepository.findWithOptions({}, { limit, skip, sort });
+        // const nextPage = await this._userRepository.findWithOptions({}, { limit, skip: skip + limit, sort });
+
+        // const results = {
+        //     nextPage: nextPage.length !== 0 ? true : false,
+        //     page,
+        //     limit,
+        //     sortBy,
+        //     leaderBoard
+        // };
+        return systemResponse(true, 'Get LeaderBoard', records);
     }
 
     public async uploadAvatar(files: any, id: string): Promise<any> {
@@ -186,6 +207,12 @@ export default class UserService {
             return systemResponse(false, 'Invalid user', {});
         }
 
-        return systemResponse(true, '', user);
+        const getRecords = await this._userRecordRepository.aggregate([
+            { $group: { _id: '$user', points: { $sum: '$points' }, earnings: { $sum: '$earnings' }, gold: { $sum: '$gold' }, silver: { $sum: '$silver' }, bronze: { $sum: '$bronze' } } }
+        ]);
+
+        const userEarnings = getRecords.find((record: any) => record._id.toString() === user.id.toString());
+
+        return systemResponse(true, '', { user: { ...user._doc, userEarnings } });
     }
 }

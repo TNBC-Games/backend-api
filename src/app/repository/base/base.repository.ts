@@ -57,4 +57,9 @@ export default abstract class BaseRepository<T extends any> implements IWrite<T>
         let response = await this._model.find(item, {}, options);
         return response;
     }
+
+    async aggregate(query: any): Promise<any> {
+        let response = await this._model.aggregate(query);
+        return response;
+    }
 }

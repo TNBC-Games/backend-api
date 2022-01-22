@@ -2,9 +2,11 @@ import { injectable, inject } from 'inversify';
 import config from '../../../config';
 import UserRepository from '../../repository/user.respository';
 import EmailCodeRepository from '../../repository/emailCode.repository';
+import UserRecordRepository from '../../repository/userRecord.repository';
 import jwt from 'jsonwebtoken';
 import { systemResponse } from '../../../utils/response';
 import { CompareString, Encrypt, SignJwt } from './encrpty.service';
+import initialRecords from './initialRecords.json';
 
 type user = {
     username: string;
@@ -15,11 +17,13 @@ type user = {
 @injectable()
 export default class AuthService {
     private _userRepository: UserRepository;
+    private _userRecordRepository: UserRecordRepository;
     private _emailCodeRepository: EmailCodeRepository;
     private limit: number;
 
     constructor() {
         this._userRepository = new UserRepository();
+        this._userRecordRepository = new UserRecordRepository();
         this._emailCodeRepository = new EmailCodeRepository();
         this.limit = 20;
     }
@@ -46,6 +50,25 @@ export default class AuthService {
         }
 
         const getUser = await this._userRepository.findOne({ email: email.toLocaleLowerCase(), oauth: false }, '-password');
+
+        const createInitialRecords = initialRecords.map(async (record) => {
+            return await this._userRecordRepository.create({ ...record, user: getUser.id });
+        });
+
+        await Promise.all(createInitialRecords)
+            .then((res: any) => {
+                console.log('Initial records created');
+            })
+            .catch((err: any) => {
+                systemResponse(true, err.message, {});
+            });
+
+        const getRecords = await this._userRecordRepository.aggregate([
+            { $group: { _id: '$user', points: { $sum: '$points' }, earnings: { $sum: '$earnings' }, gold: { $sum: '$gold' }, silver: { $sum: '$silver' }, bronze: { $sum: '$bronze' } } }
+        ]);
+
+        const userEarnings = getRecords.find((record: any) => record._id.toString() === getUser.id.toString());
+
         const payload: { user: { id: string } } = {
             user: {
                 id: getUser.id
@@ -62,7 +85,7 @@ export default class AuthService {
             return systemResponse(false, 'Token error', {});
         }
 
-        return systemResponse(true, 'Registration successfull', { accessToken, refreshToken, user: getUser });
+        return systemResponse(true, 'Registration successfull', { accessToken, refreshToken, user: { ...getUser._doc, userEarnings } });
     }
 
     public async login(body: user): Promise<any> {
