@@ -1,6 +1,7 @@
 import { injectable, inject } from 'inversify';
 import GameRepository from '../../repository/game.repository';
 import UserRepository from '../../repository/user.respository';
+import TournamenRepository from '../../repository/tournament.repository';
 import { systemResponse } from '../../../utils/response';
 import mongoose from 'mongoose';
 import { cloudinary } from '../../../cloudinary';
@@ -16,11 +17,13 @@ type game = {
 export default class AuthService {
     private _gameRepository: GameRepository;
     private _userRepository: UserRepository;
+    private _tournamentRepository: TournamenRepository;
     private limit: number;
 
     constructor() {
         this._gameRepository = new GameRepository();
         this._userRepository = new UserRepository();
+        this._tournamentRepository = new TournamenRepository();
         this.limit = 20;
     }
 
@@ -50,7 +53,11 @@ export default class AuthService {
         if (!game) {
             return systemResponse(false, 'Invalid game', {});
         }
-        return systemResponse(true, '', game);
+
+        const tournaments = await this._tournamentRepository.find({ game: game.id });
+        const result = { ...game._doc, tournaments };
+
+        return systemResponse(true, '', result);
     }
 
     public async getGames(query: any): Promise<any> {

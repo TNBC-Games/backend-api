@@ -84,11 +84,15 @@ export default class UserService {
     }
 
     public async getLeaderBoard(query: any): Promise<any> {
-        let { sortBy, page, limit, game } = query;
+        let { sortBy, page, limit, game, timeSpan } = query;
+        let time: any = new Date('December 17, 1895 00:00:00');
         game = game ? game.toLocaleUpperCase() : '';
 
         const filters: string[] = ['earnings', 'points', 'gold', 'silver', 'bronze'];
         if (filters.some((filter) => sortBy !== filter)) sortBy === 'earnings';
+
+        if (timeSpan === '7days') time = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
+        if (timeSpan === '30days') time = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
 
         const sort: any = {};
         if (sortBy === 'earnings') sort.earnings = -1;
@@ -97,34 +101,46 @@ export default class UserService {
         if (sortBy === 'silver') sort.silver = -1;
         if (sortBy === 'bronze') sort.bronze = -1;
 
-        const records = await this._userRecordRepository.aggregate([
-            {
-                $match: { $and: [{ createdAt: { $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000) } }, { game: { $eq: game } }] }
-            },
+        let match: any = { createdAt: { $gte: time } };
+
+        if (game || game.trim() !== '') {
+            match = { $and: [{ createdAt: { $gte: time } }, { game: { $eq: game } }] };
+        }
+
+        if (!page) page = 1;
+        if (!limit) limit = 10;
+
+        page = parseInt(page);
+        limit = parseInt(limit);
+        const skip = (page - 1) * limit;
+
+        const leaderBoard = await this._userRecordRepository.aggregate([
+            { $match: match },
             { $group: { _id: '$user', points: { $sum: '$points' }, earnings: { $sum: '$earnings' }, gold: { $sum: '$gold' }, silver: { $sum: '$silver' }, bronze: { $sum: '$bronze' } } },
-            {
-                $sort: sort
-            }
+            { $sort: sort },
+            { $skip: skip },
+            { $limit: limit }
         ]);
 
-        // if (!page) page = 1;
-        // if (!limit) limit = 2;
+        const nextPage = await this._userRecordRepository.aggregate([
+            { $match: match },
+            { $group: { _id: '$user', points: { $sum: '$points' }, earnings: { $sum: '$earnings' }, gold: { $sum: '$gold' }, silver: { $sum: '$silver' }, bronze: { $sum: '$bronze' } } },
+            { $sort: sort },
+            { $skip: skip + limit },
+            { $limit: limit }
+        ]);
 
-        // page = parseInt(page);
-        // limit = parseInt(limit);
-        // const skip = (page - 1) * limit;
+        const results = {
+            nextPage: nextPage.length !== 0 ? true : false,
+            page,
+            limit,
+            sortedBy: sortBy,
+            timeSpan: timeSpan === '7days' ? '7days' : timeSpan === '30days' ? '30days' : 'All Time',
+            game: game.trim() === '' ? 'All games' : game,
+            leaderBoard
+        };
 
-        // const leaderBoard = await this._userRepository.findWithOptions({}, { limit, skip, sort });
-        // const nextPage = await this._userRepository.findWithOptions({}, { limit, skip: skip + limit, sort });
-
-        // const results = {
-        //     nextPage: nextPage.length !== 0 ? true : false,
-        //     page,
-        //     limit,
-        //     sortBy,
-        //     leaderBoard
-        // };
-        return systemResponse(true, 'Get LeaderBoard', records);
+        return systemResponse(true, 'Get LeaderBoard', results);
     }
 
     public async uploadAvatar(files: any, id: string): Promise<any> {
