@@ -9,3 +9,5 @@ build/
 libertyAPI
 libertyAPI.pub
 tmp/
+yarn.lock
+yarn-error.log
