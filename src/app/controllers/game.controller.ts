@@ -44,6 +44,24 @@ export default class GameController {
         return jsonSuccess(res, 200, respo.message, respo.data, {});
     }
 
+    public async publishGame(req: Request, res: Response): Promise<void> {
+        const gameService = new GameService();
+        let respo: ISystemR = await gameService.publishGame(req.params.name, res.locals.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
+    public async unPublishGame(req: Request, res: Response): Promise<void> {
+        const gameService = new GameService();
+        let respo: ISystemR = await gameService.unPublishGame(req.params.name, res.locals.id);
+        if (!respo.success) {
+            return jsonFailed(res, 400, respo.message, {}, {});
+        }
+        return jsonSuccess(res, 200, respo.message, respo.data, {});
+    }
+
     public async updateGame(req: Request, res: Response): Promise<void> {
         const gameService = new GameService();
         let respo: ISystemR = await gameService.updateGame(req.body, req.params.name, res.locals.id);

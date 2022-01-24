@@ -16,6 +16,8 @@ const router = express.Router();
 const GameControllerInstance = container.get<GameController>(GameController);
 
 router.post('/', auth, admin, celebrate(addGameSchema), controllerWrapper(GameControllerInstance.addGame));
+router.post('/publish/:name', auth, admin, controllerWrapper(GameControllerInstance.publishGame));
+router.post('/unpublish/:name', auth, admin, controllerWrapper(GameControllerInstance.unPublishGame));
 router.post('/uploadImage/:name', auth, admin, checkImage, controllerWrapper(GameControllerInstance.uploadGameImage));
 router.get('/', GameControllerInstance.getGames);
 router.get('/:name', GameControllerInstance.getGame);

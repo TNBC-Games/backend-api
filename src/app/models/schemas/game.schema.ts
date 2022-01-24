@@ -29,6 +29,10 @@ class GameSchema {
                 categories: {
                     type: [categoriesSchema],
                     required: false
+                },
+                published: {
+                    type: Boolean,
+                    default: false
                 }
             },
             {

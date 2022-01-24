@@ -49,7 +49,7 @@ export default class AuthService {
     }
 
     public async getGame(name: string): Promise<any> {
-        const game = await this._gameRepository.findOne({ name: name.toLocaleUpperCase() });
+        const game = await this._gameRepository.findOne({ name: name.toLocaleUpperCase(), published: true });
         if (!game) {
             return systemResponse(false, 'Invalid game', {});
         }
@@ -70,8 +70,8 @@ export default class AuthService {
         limit = parseInt(limit);
         const skip = (page - 1) * limit;
 
-        const games = await this._gameRepository.findWithOptions({}, { limit, skip });
-        const nextPage = await this._gameRepository.findWithOptions({}, { limit, skip: skip + limit });
+        const games = await this._gameRepository.findWithOptions({ published: true }, { limit, skip });
+        const nextPage = await this._gameRepository.findWithOptions({ published: true }, { limit, skip: skip + limit });
 
         const data = { nextPage: nextPage.length !== 0 ? true : false, page, limit, games };
 
@@ -88,12 +88,20 @@ export default class AuthService {
         limit = parseInt(limit);
         const skip = (page - 1) * limit;
 
-        const results = await this._gameRepository.findWithOptions({ name: { $regex: name, $options: 'i' } }, { limit, skip });
-        const nextPage = await this._gameRepository.findWithOptions({ name: { $regex: name, $options: 'i' } }, { limit, skip: skip + limit });
+        const results = await this._gameRepository.findWithOptions({ name: { $regex: name, $options: 'i' }, published: true }, { limit, skip });
+        const nextPage = await this._gameRepository.findWithOptions({ name: { $regex: name, $options: 'i' }, published: true }, { limit, skip: skip + limit });
 
         const data = { nextPage: nextPage.length !== 0 ? true : false, page, limit, results };
 
         return systemResponse(true, 'Search games', data);
+    }
+
+    public async publishGame(name: string, id: string): Promise<any> {
+        return systemResponse(true, 'Publish game', {});
+    }
+
+    public async unPublishGame(name: string, id: string): Promise<any> {
+        return systemResponse(true, 'Unblish game', {});
     }
 
     public async updateGame(body: game, _name: string, id: string): Promise<any> {

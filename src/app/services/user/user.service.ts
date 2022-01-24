@@ -87,6 +87,7 @@ export default class UserService {
         let { sortBy, page, limit, game, timeSpan } = query;
         let time: any = new Date('December 17, 1895 00:00:00');
         game = game ? game.toLocaleUpperCase() : '';
+        let leaderboard: any;
 
         const filters: string[] = ['earnings', 'points', 'gold', 'silver', 'bronze'];
         if (filters.some((filter) => sortBy !== filter)) sortBy === 'earnings';
@@ -114,7 +115,7 @@ export default class UserService {
         limit = parseInt(limit);
         const skip = (page - 1) * limit;
 
-        const leaderBoard = await this._userRecordRepository.aggregate([
+        const records = await this._userRecordRepository.aggregate([
             { $match: match },
             { $group: { _id: '$user', points: { $sum: '$points' }, earnings: { $sum: '$earnings' }, gold: { $sum: '$gold' }, silver: { $sum: '$silver' }, bronze: { $sum: '$bronze' } } },
             { $sort: sort },
@@ -130,6 +131,17 @@ export default class UserService {
             { $limit: limit }
         ]);
 
+        const getUsers = records.map(async (record: any) => {
+            const user = await this._userRepository.findById(record._id, '-password -cloudinaryId');
+            return { ...user._doc, userEarnings: record };
+        });
+
+        await Promise.all(getUsers)
+            .then((res) => {
+                leaderboard = res;
+            })
+            .catch((err) => console.log(err.message));
+
         const results = {
             nextPage: nextPage.length !== 0 ? true : false,
             page,
@@ -137,7 +149,7 @@ export default class UserService {
             sortedBy: sortBy,
             timeSpan: timeSpan === '7days' ? '7days' : timeSpan === '30days' ? '30days' : 'All Time',
             game: game.trim() === '' ? 'All games' : game,
-            leaderBoard
+            leaderboard
         };
 
         return systemResponse(true, 'Get LeaderBoard', results);
