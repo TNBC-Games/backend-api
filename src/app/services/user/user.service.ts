@@ -90,7 +90,7 @@ export default class UserService {
         let leaderboard: any;
 
         const filters: string[] = ['earnings', 'points', 'gold', 'silver', 'bronze'];
-        if (filters.some((filter) => sortBy !== filter)) sortBy === 'earnings';
+        if (filters.some((filter) => sortBy !== filter)) sortBy = 'earnings';
 
         if (timeSpan === '7days') time = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
         if (timeSpan === '30days') time = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
