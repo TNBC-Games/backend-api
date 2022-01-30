@@ -20,6 +20,7 @@ router.post('/publish/:name', auth, admin, controllerWrapper(GameControllerInsta
 router.post('/unpublish/:name', auth, admin, controllerWrapper(GameControllerInstance.unPublishGame));
 router.post('/uploadImage/:name', auth, admin, checkImage, controllerWrapper(GameControllerInstance.uploadGameImage));
 router.get('/', GameControllerInstance.getGames);
+router.get('/unpublished', auth, admin, GameControllerInstance.getUnpublishedGames);
 router.get('/:name', GameControllerInstance.getGame);
 router.get('/search/:name', GameControllerInstance.searchGames);
 router.put('/:name', auth, admin, GameControllerInstance.updateGame);

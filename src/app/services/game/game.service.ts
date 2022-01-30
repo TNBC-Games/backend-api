@@ -75,7 +75,25 @@ export default class AuthService {
 
         const data = { nextPage: nextPage.length !== 0 ? true : false, page, limit, games };
 
-        return systemResponse(true, 'Get games', data);
+        return systemResponse(true, '', data);
+    }
+
+    public async getUnpublishedGames(query: any): Promise<any> {
+        let { page, limit } = query;
+
+        if (!page) page = 1;
+        if (!limit) limit = 2;
+
+        page = parseInt(page);
+        limit = parseInt(limit);
+        const skip = (page - 1) * limit;
+
+        const games = await this._gameRepository.findWithOptions({ published: false }, { limit, skip });
+        const nextPage = await this._gameRepository.findWithOptions({ published: false }, { limit, skip: skip + limit });
+
+        const data = { nextPage: nextPage.length !== 0 ? true : false, page, limit, games };
+
+        return systemResponse(true, '', data);
     }
 
     public async searchGames(query: any, name: string): Promise<any> {
@@ -97,11 +115,43 @@ export default class AuthService {
     }
 
     public async publishGame(name: string, id: string): Promise<any> {
-        return systemResponse(true, 'Publish game', {});
+        const game = await this._gameRepository.findOne({ name: name.toLocaleUpperCase() });
+        if (!game) {
+            return systemResponse(false, 'Invalid game', {});
+        }
+
+        if (game.published) {
+            return systemResponse(false, 'Game is already published', {});
+        }
+
+        const update = await this._gameRepository.updateById(game.id, { published: true });
+        if (!update) {
+            return systemResponse(false, 'Error while publishing', {});
+        }
+
+        const getGame = await this._gameRepository.findOne({ name: name.toLocaleUpperCase() });
+
+        return systemResponse(true, 'Game published', getGame);
     }
 
     public async unPublishGame(name: string, id: string): Promise<any> {
-        return systemResponse(true, 'Unblish game', {});
+        const game = await this._gameRepository.findOne({ name: name.toLocaleUpperCase() });
+        if (!game) {
+            return systemResponse(false, 'Invalid game', {});
+        }
+
+        if (!game.published) {
+            return systemResponse(false, 'Game is not published', {});
+        }
+
+        const update = await this._gameRepository.updateById(game.id, { published: false });
+        if (!update) {
+            return systemResponse(false, 'Error while publishing', {});
+        }
+
+        const getGame = await this._gameRepository.findOne({ name: name.toLocaleUpperCase() });
+
+        return systemResponse(true, 'Game unpublished', getGame);
     }
 
     public async updateGame(body: game, _name: string, id: string): Promise<any> {
