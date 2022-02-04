@@ -101,12 +101,6 @@ export default class AuthService {
             return systemResponse(false, 'Tournament is full', {});
         }
 
-        const data = { user: user.id, tournament: tournament.id };
-        const enterTournament = await this._myTournamentRepository.create(data);
-        if (!enterTournament) {
-            return systemResponse(false, 'Error while entering tournament', {});
-        }
-
         return systemResponse(true, 'Successfully entered tournament', {});
     }
 
