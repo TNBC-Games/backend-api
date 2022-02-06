@@ -1,4 +1,4 @@
-import IUserModel from '../interfaces/IUserModel';
+import ITournamentQueueModel from '../interfaces/ITournamentQueueModel';
 import mongoose from 'mongoose';
 
 class TournamentQueueSchema {
@@ -28,5 +28,5 @@ class TournamentQueueSchema {
     }
 }
 
-const schema = mongoose.model<IUserModel>('Users', TournamentQueueSchema.schema);
+const schema = mongoose.model<ITournamentQueueModel>('TournamentQueues', TournamentQueueSchema.schema);
 export default schema;

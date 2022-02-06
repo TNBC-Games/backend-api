@@ -28,7 +28,7 @@ export default class TournamentController {
 
     public async getTournament(req: Request, res: Response): Promise<void> {
         const tournamentService = new TournamentService();
-        let respo: ISystemR = await tournamentService.getTournament(req.params.id);
+        let respo: ISystemR = await tournamentService.getTournament(req.params.id, req.query);
         if (!respo.success) {
             return jsonFailed(res, 400, respo.message, {}, {});
         }

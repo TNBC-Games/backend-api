@@ -1,5 +1,6 @@
 import { injectable, inject } from 'inversify';
 import TournamentRepository from '../../repository/tournament.repository';
+import TournamentQueueRepository from '../../repository/tournamentQueue.repository';
 import GameRepository from '../../repository/game.repository';
 import UserRepository from '../../repository/user.respository';
 import MyTournamentRepository from '../../repository/myTournaments.repository';
@@ -24,6 +25,7 @@ type details = {
 @injectable()
 export default class AuthService {
     private _tournamentRepository: TournamentRepository;
+    private _tournamentQueueRepository: TournamentQueueRepository;
     private _myTournamentRepository: MyTournamentRepository;
     private _gameRepository: GameRepository;
     private _userRepository: UserRepository;
@@ -31,6 +33,7 @@ export default class AuthService {
 
     constructor() {
         this._tournamentRepository = new TournamentRepository();
+        this._tournamentQueueRepository = new TournamentQueueRepository();
         this._myTournamentRepository = new MyTournamentRepository();
         this._gameRepository = new GameRepository();
         this._userRepository = new UserRepository();
@@ -96,18 +99,72 @@ export default class AuthService {
             return systemResponse(false, 'Invalid tournament', {});
         }
 
-        const tournamentPlayers = await this._myTournamentRepository.find({});
+        const tournamentPlayers = await this._myTournamentRepository.find({ tournament: tournament.id });
         if (tournamentPlayers.length === tournament.limit) {
             return systemResponse(false, 'Tournament is full', {});
         }
 
-        return systemResponse(true, 'Successfully entered tournament', {});
+        const checkQueue = await this._tournamentQueueRepository.findOne({ user: user.id, tournament: tournament.id });
+        if (checkQueue && checkQueue.status === 'in queue') {
+            return systemResponse(false, 'User in queue', {});
+        }
+
+        if (checkQueue && checkQueue.status === 'settled') {
+            return systemResponse(false, 'Tournament is full', {});
+        }
+
+        const data = {
+            user: user.id,
+            tournament: tournament.id,
+            status: 'in queue'
+        };
+
+        const addToQueue = await this._tournamentQueueRepository.create(data);
+        if (!addToQueue) {
+            return systemResponse(false, 'Error while adding user to queue', {});
+        }
+
+        return systemResponse(true, 'User added to queue', {});
     }
 
-    public async getTournament(id: string): Promise<any> {
+    public async addUsersToTournaments(): Promise<any> {
+        const queues = await this._tournamentQueueRepository.find({ status: 'in queue' });
+        let count = 0;
+
+        const addUser = async () => {
+            const tournament = await this._tournamentRepository.findById(queues[count].tournament);
+            const tournamentPlayers = await this._myTournamentRepository.find({ tournament: queues[count].tournament });
+            const checkUser = await this._myTournamentRepository.findOne({ user: queues[count].user, tournament: queues[count].tournament });
+
+            console.log(tournamentPlayers, '---', tournament.limit);
+
+            if (!checkUser && tournament && tournamentPlayers.length < tournament.limit) {
+                const data = {
+                    user: queues[count].user,
+                    tournament: queues[count].tournament
+                };
+                await this._myTournamentRepository.create(data);
+            }
+
+            await this._tournamentQueueRepository.updateById(queues[count].id, { status: 'settled' });
+            count++;
+            if (count < queues.length) addUser();
+        };
+
+        if (queues.length > 0) {
+            addUser();
+        }
+    }
+
+    public async getTournament(id: string, query: any): Promise<any> {
+        const { user } = query;
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return systemResponse(false, 'Invalid tournament id', {});
         }
+
+        const checkTournament = await this._myTournamentRepository.findOne({ user, tournament: id });
+        const checkQueue = await this._tournamentQueueRepository.findOne({ user, tournament: id });
 
         const tournament = await this._tournamentRepository.findById(id);
         if (!tournament) {
