@@ -171,7 +171,12 @@ export default class AuthService {
             return systemResponse(false, 'Invalid tournament', {});
         }
 
-        return systemResponse(true, '', tournament);
+        const userStatus = {
+            inQueue: !checkQueue ? false : checkQueue && checkQueue.status === 'in queue' ? true : false,
+            inTournament: checkTournament ? true : false
+        };
+
+        return systemResponse(true, '', { ...tournament._doc, userStatus });
     }
 
     public async getMyTournaments(id: string): Promise<any> {
