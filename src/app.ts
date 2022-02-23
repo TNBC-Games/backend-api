@@ -16,6 +16,8 @@ const passportSetup = require('./passportSetup');
 import fileUpload from 'express-fileupload';
 import { createSuperAdmin } from './seeder';
 import TournamentService from './app/services/tournament/tournament.service';
+import TransactionService from './app/services/transaction/transaction.service';
+import cron from 'node-cron';
 
 /**
  * This is a bootstrap function
@@ -84,11 +86,17 @@ async function bootstrap() {
     //create super admin
     createSuperAdmin();
 
-    setInterval(() => {
+    cron.schedule('*/5 * * * *', () => {
         console.log('started...');
         const tournamentService = new TournamentService();
         tournamentService.addUsersToTournaments();
-    }, 300000);
+    });
+
+    cron.schedule('*/5 * * * *', () => {
+        console.log('started...');
+        const transactionService = new TransactionService();
+        transactionService.validateTransaction();
+    });
 
     /**
      * Host static public directory

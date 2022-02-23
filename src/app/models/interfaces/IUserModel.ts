@@ -5,6 +5,7 @@ interface UserModel extends mongoose.Document {
     username: string;
     password: string;
     avatar: string;
+    balance: number;
     admin: boolean;
     oauth: boolean;
     googleId?: boolean;

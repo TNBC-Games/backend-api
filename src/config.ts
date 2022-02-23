@@ -23,6 +23,7 @@ export default {
     cloudinary_cloud_name: process.env.CLOUD_NAME || 'tnbcgames-com',
     cloudinary_api_key: process.env.CLOUDINARY_API_KEY || '437354955832423',
     cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET || '0pqY8LkIZ6DXTeX8US3lKBmXKCw',
+    tnbAccountNumber: 'bcd9d09b5d1093a39797bc0647434beaf11578412340440a8b0ff91ef440f536',
     database: {
         url: process.env.DB_URL || 'mongodb+srv://leo:leo_0987@tnbc.xymbs.mongodb.net/TNBC?retryWrites=true&w=majority'
     },

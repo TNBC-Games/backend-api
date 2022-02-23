@@ -18,6 +18,10 @@ class UserSchema {
                     type: String,
                     default: null
                 },
+                balance: {
+                    type: Number,
+                    default: 0
+                },
                 admin: {
                     type: Boolean
                 },
