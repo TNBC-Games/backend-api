@@ -26,6 +26,7 @@ export const updateTournamentSchema = {
         type: Joi.string(),
         rules: Joi.string(),
         howToApply: Joi.string(),
-        game: Joi.string()
+        game: Joi.string(),
+        completed: Joi.boolean()
     })
 };

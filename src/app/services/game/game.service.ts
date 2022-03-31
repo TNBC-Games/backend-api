@@ -230,4 +230,15 @@ export default class AuthService {
 
         return systemResponse(true, 'Game', getGame);
     }
+
+    public async getAllGames(id: string): Promise<any> {
+        const user = await this._userRepository.findById(id);
+        if (!user) {
+            return systemResponse(false, 'Invalid User', {});
+        }
+
+        const games = await this._gameRepository.find({});
+
+        return systemResponse(true, '', games);
+    }
 }

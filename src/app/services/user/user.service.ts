@@ -1,6 +1,7 @@
 import { injectable, inject } from 'inversify';
 import UserRepository from '../../repository/user.respository';
 import UserRecordRepository from '../../repository/userRecord.repository';
+import TransactionRepository from '../../repository/transaction.repository';
 import { systemResponse } from '../../../utils/response';
 import { Encrypt } from '../auth/encrpty.service';
 import { cloudinary } from '../../../cloudinary';
@@ -17,11 +18,13 @@ type user = {
 export default class UserService {
     private _userRepository: UserRepository;
     private _userRecordRepository: UserRecordRepository;
+    private _transactionRepository: TransactionRepository;
     private limit: number;
 
     constructor() {
         this._userRepository = new UserRepository();
         this._userRecordRepository = new UserRecordRepository();
+        this._transactionRepository = new TransactionRepository();
         this.limit = 20;
     }
 
@@ -242,5 +245,32 @@ export default class UserService {
         const userEarnings = getRecords.find((record: any) => record._id.toString() === user.id.toString());
 
         return systemResponse(true, '', { user: { ...user._doc, userEarnings } });
+    }
+
+    public async getTransactions(id: string, query: any): Promise<any> {
+        let { noOfDays } = query;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return systemResponse(false, 'Invalid user', {});
+        }
+
+        const user = await this._userRepository.findById(id, '-password -cloudinaryId');
+        if (!user) {
+            return systemResponse(false, 'Invalid user', {});
+        }
+
+        if (!noOfDays) noOfDays = 1;
+        noOfDays = parseInt(noOfDays);
+
+        const time = new Date(new Date().getTime() - noOfDays * 24 * 60 * 60 * 1000);
+
+        const match = {
+            user: mongoose.Types.ObjectId(user.id),
+            createdAt: { $gte: time }
+        };
+
+        const transactions = await this._transactionRepository.aggregate([{ $match: match }, { $sort: { createdAt: -1 } }]);
+
+        return systemResponse(true, 'Get Transactions', { transactions });
     }
 }

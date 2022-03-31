@@ -22,6 +22,7 @@ router.get('/leaderBoard', controllerWrapper(UserControllerInstance.getLeaderBoa
 router.post('/avatar', auth, checkImage, controllerWrapper(UserControllerInstance.uploadAvatar));
 router.delete('/avatar', auth, controllerWrapper(UserControllerInstance.removeAvatar));
 router.get('/profile/:id', controllerWrapper(UserControllerInstance.getUserProfile));
+router.get('/transactions', auth, controllerWrapper(UserControllerInstance.getTransactions));
 
 export default {
     baseUrl: '/user',

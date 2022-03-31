@@ -86,17 +86,17 @@ async function bootstrap() {
     //create super admin
     createSuperAdmin();
 
-    cron.schedule('*/5 * * * *', () => {
-        console.log('started...');
-        const tournamentService = new TournamentService();
-        tournamentService.addUsersToTournaments();
-    });
+    // cron.schedule('*/5 * * * *', () => {
+    //     console.log('started...');
+    //     const tournamentService = new TournamentService();
+    //     tournamentService.addUsersToTournaments();
+    // });
 
-    cron.schedule('*/5 * * * *', () => {
-        console.log('started...');
-        const transactionService = new TransactionService();
-        transactionService.validateTransaction();
-    });
+    // cron.schedule('*/5 * * * *', () => {
+    //     console.log('started...');
+    //     const transactionService = new TransactionService();
+    //     transactionService.validateTransaction();
+    // });
 
     /**
      * Host static public directory
