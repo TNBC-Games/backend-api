@@ -69,13 +69,15 @@ export default class AuthService {
         const touenaments = await this._tournamentRepository.findWithOptions({}, { limit, skip });
         const nextPage = await this._tournamentRepository.findWithOptions({}, { limit, skip: skip + limit });
 
-        const getGameInfo = touenaments.map(async (val: any) => {
+        const otherInfo = touenaments.map(async (val: any) => {
             const game = await this._gameRepository.findById(val.game);
-            return { ...val._doc, game };
+            const noOfPlayers = await this._myTournamentRepository.find({ tournament: val.id });
+
+            return { ...val._doc, game, noOfPlayers: noOfPlayers.length };
         });
 
         let data = {};
-        await Promise.all(getGameInfo)
+        await Promise.all(otherInfo)
             .then((results) => {
                 data = { nextPage: nextPage.length !== 0 ? true : false, page, limit, results };
             })

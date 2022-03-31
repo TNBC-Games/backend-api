@@ -55,6 +55,10 @@ class TournamentSchema {
                 cloudinaryId: {
                     type: String
                 },
+                completed: {
+                    type: Boolean,
+                    default: false
+                },
                 delete: {
                     type: Boolean
                 },
